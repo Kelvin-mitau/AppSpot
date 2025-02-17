@@ -2,11 +2,97 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
+
+:root{
+  --background: #ffffff;
+  --foreground: #180036;
+  --purple: #7400B8;
+  --purple-blue: #5E60CE;
+  --light-blue: #48BFE3;
+  --aqua: #80FFDB;
+  --dark-purple: #1a1224;
+  --cyan: #CAF0F8;
+}
+
+
+/* html,
 body {
   @apply bg-white dark:bg-gray-950;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
+  }
+} */
+
+/* Body background */
+body{
+  color: var(--cyan);
+    background: linear-gradient(var(--dark-purple) 70%, var(--foreground));
+    background-repeat: no-repeat;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    scrollbar-width: thin;
+}
+
+/* Hero */
+.Hero-logo {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 10%;
+    height: 10%;
+    background: linear-gradient(90deg, var(--purple), var(--purple-blue), var(--light-blue), var(--aqua));
+    background-size: 100% 100%;
+    animation: animate-hero-logo 2s ease 1 forwards;
+    border-radius: 70%;
+    z-index: -1;
+  }
+}
+
+@keyframes animate-hero-logo {
+  0% {
+    width: 10%;
+    height: 10%;
+  }
+
+  100% {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Navbar */
+.Navbar {
+  background: var(--purple-blue);
+
+  .Nav-btn {
+    padding: 8px 4px;
+    border-radius: 7px;
+    background: linear-gradient(145deg, #5556b9, #6567dc);
+    box-shadow: 5px 5px 10px #4b4da5,
+      -5px -5px 10px #7173f7;
+
+    &>span {
+      background: var(--purple);
+      color: var(--cyan);
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s;
+
+      &:hover {
+        background: var(--purple-blue);
+      }
+
+      border-radius: 5px;
+      background: #5E60CE;
+      box-shadow: inset 5px 5px 4px #393b7e,
+      inset -3px -3px 10px #8385ff;
+    }
   }
 }
