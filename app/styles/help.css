@@ -1,0 +1,30 @@
+.Faq-input-div {
+  overflow: hidden;
+  border: 1px solid rgb(168, 156, 250);
+}
+
+.Faq-input-div .answer-wrapper > div{
+  overflow: hidden;
+}
+.Faq-input-div .answer-wrapper{
+  display: grid;
+  overflow: hidden;
+  grid-template-rows: 0fr;
+  transition: all 0.5s linear(0, 0.206 7.5%, 0.436 17.3%, 0.833 35.5%, 1 44.7%, 0.924 51.4%, 0.906 54.6%, 0.9 57.9%, 0.916 63.7%, 1 77.4%, 0.987 84.4%, 1);
+}
+/* .Faq-input-div:has(input:not(:checked)) .answer-wrapper {
+  grid-template-rows: 0;
+} */
+.Faq-input-div:has(input:checked) .answer-wrapper {
+  grid-template-rows: 1fr;
+}
+
+
+.Faq-input-div:has(input:checked) {
+  height: 100%;
+}
+
+.Faq-input-div:has(input:checked) .Arrow-right-icon {
+  /* transform: rotateX(50deg); */
+  rotate: 90deg;
+}

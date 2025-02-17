@@ -42,8 +42,8 @@ export default function Index() {
           <a
             role="button"
             className="border border-white group relative inline-flex items-center justify-center text-base rounded-xl bg-gray-900 px-8 py-3 font-semibold text-white transition-all duration-200 hover:bg-gray-800 hover:shadow-lg hover:-translate-y-0.5 hover:shadow-gray-600/30"
-            title="payment"
-            href="/sign-up"
+            title="Sign Up"
+            href="/signup"
           >Get Started with AppSpot<svg
             aria-hidden="true"
             viewBox="0 0 10 10"
