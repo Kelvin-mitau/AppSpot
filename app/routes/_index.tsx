@@ -12,7 +12,7 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <div className="w-full min-h-screen   flex flex-col items-center">
-      <nav>
+      <nav className="w-full">
         <Navabar />
       </nav>
 

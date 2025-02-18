@@ -42,4 +42,4 @@ const products:product[] = [
 ]
 
 
-export default products
+export  {products}

@@ -1,23 +1,21 @@
-import { Link, useParams } from '@remix-run/react'
-import React, { useState } from 'react'
+import React, { Suspense } from 'react'
+import { useState } from 'react';
+import { useParams } from '@remix-run/react';
 import handleItemRating from '../components/itemRating';
-import { useNavigate } from '@remix-run/react';
-import { LoaderFunction } from '@remix-run/node';
+import { Link } from '@remix-run/react';
+import { products } from './--sampleProductData';
+import Navabar from '../components/Navabar';
 
 function Product() {
-    //const navigate = useNavigate()
+
     const { id } = useParams();
-    const [selectedPhoto, setSelectedPhoto] = useState(0)
+    const product = products[1]
+    const [selectedPhoto, setSelectedPhoto] = useState(product.screenshots[0])
     const [selectedNoOfItems, setSelectedNoOfItems] = useState(0)
 
-    const product = {
-        itemPhotos: ["/random.png", "/random.png", '/logo.png'],
-        rating: 4,
-        price: 500
-    }
     const relatedProducts = [{
         _id: "2",
-        itemPhotos: ["/random.png", "/random.png", , '/logo.png'],
+        itemPhotos: ["/random.png", "/random.png", '/logo.png'],
         rating: 4,
         price: 500,
         description: "Something here..."
@@ -28,148 +26,114 @@ function Product() {
         price: 500,
         description: "Something here..."
     }]
-
-
-    function handleBuyNow() {
-        //navigate(`/order/${id}?quantity=2&color=red`);
-    }
-
-
-    function handlePhotoSelect(btn: number) {
-        if (btn == 1 && selectedPhoto < product.itemPhotos.length - 1) {
-            setSelectedPhoto((prev) => prev + 1);
-        }
-        if (btn == -1 && selectedPhoto > 0) {
-            setSelectedPhoto((prev) => prev - 1);
-        }
-    }
     function handleSelectedNoOfItems(val: number) {
         setSelectedNoOfItems(val);
     }
+    function handleBuyNow() {
+
+    }
 
     return (
-        <div className='text-white my-3'>
-        </div>
+        <>
+            <nav className='w-full'>
+                <Navabar />
+            </nav>
+            <Suspense fallback={<div>Loading...</div>}>
+                <div className="sm:grid grid-cols-2 gap-[2rem] place-items-start ml-1 my-4">
+                    <div className=' mx-auto h-full'>
+                        <div className=" flex   h-[100%] ">
+                            <div className='w-full h-full'>
+                                <img src={selectedPhoto} alt="" className='h-full max-h-[32rem] rounded' />
+                            </div>
+                            <div className='flex flex-col gap-[2px]'>
+                                {product.screenshots
+                                    .filter((item, _index) => product.screenshots[_index] != selectedPhoto)
+                                    .map((item, index) => <button onClick={() => setSelectedPhoto(item)} className='cursor-pointer'>
+                                        <img src={item} key={index} className={`h-10 border border-slate-400 rounded aspect-[2/1.5]`} /></button>)}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="product_details-div">
+                        <p id="product-name" className='text-white text-xl my-2'>{product.title}</p>
+                        <p className="m-0 ">
+                            {product.description}
+                        </p>
+                        {product && (
+                            <div className="flex gap-[50%] w-full">
+                                <p>{handleItemRating(product.customerReviews.reduce((accumulator, item) => {
+                                    return accumulator + item.rating;
+                                }, 0), "")} </p>
+                                <p>({product.customerReviews.length})</p>
+                            </div>
+                        )}
+                        <div className='flex justify-end'>
+                            {product.pricingModel == "freemium" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>Free</p>}
+                            {product.pricingModel == "subscription" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>$ {product.price} per month</p>}
+                            {product.pricingModel == "oneTime" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>$ {product.price} one time</p>}
+
+                        </div>
+
+
+                        <p className="text-lg text-white">
+                            Features
+                        </p>
+                        <ol className='list-inside list-decimal'>
+                            {
+                                product.features.map((feature, _index) => <li key={_index}>{feature}</li>)
+                            }
+                        </ol>
+                        <div className='my-2'>
+                            {product.productURL && <p ><i className=''>Checkout the site: </i><a className='underline' href={product.productURL}>here.</a></p>}
+                            {product.documentationURL && <p ><i className=''>Checkout the site's documentation: </i><a className='underline' href={product.documentationURL}>here.</a></p>}
+                        </div>
+                        <div className="flex justify-end  mt-[10%]">
+                            <button
+                                className='bg-[var(--purple-blue)] w-fit py-1 text-lg px-4 rounded-lg'
+                                onClick={handleBuyNow}
+                            >
+                                Buy Now
+                            </button>
+                        </div>
+
+                        <div id="product_reviews-div" className='my-4 text-lg text-white'>
+                            <h3>Product reviews</h3>
+                            {product.customerReviews.length == 0 && <p>There are no customer revies yet.</p>}
+                        </div>
+                    </div>
+                </div>
+                {relatedProducts && (
+                    <div>
+                        <h3>You may also like</h3>
+                        <div className="flex gap-2 pb-2">
+                            {relatedProducts.map((item) => {
+                                return (
+                                    <Link to={`/product/${item._id}`}
+                                        key={Math.random()}
+                                        className="relative rounded cursor-pointer text-black bg-lm-bg w-[18vw] pb-1"
+                                    >
+                                        <img
+                                            className="w-[19vw] h-[19vw] rounded-tl rounded-tr"
+                                            src={item.itemPhotos[0]}
+                                        />
+                                        <div className="flex justify-between my-1 mx-2">
+                                            <p className="m-0">item x</p>
+                                            <p className="m-0"> {item.price}/=</p>
+                                        </div>
+                                        <p className="my-1 mx-2 overflow-hidden truncate">
+                                            {item.description}
+                                        </p>
+                                        {handleItemRating(item.rating, "text-[6px] sm:text-[10px]")}
+                                    </Link>
+                                )
+                            })}
+
+                        </div>
+                    </div>)}
+            </Suspense>
+        </>
+
     )
 }
 
 export default Product
-/* <div className="sm:grid grid-cols-[40%_60%] gap-[3vw] place-items-start ml-1">
-    <div>
-        <div className=" flex  items-center gap-1  h-[100%] w-[100%]">
-            <div>
-                <img src={product.itemPhotos[selectedPhoto]} alt="" className='w-[70%]' />
-            </div>
-            <div className='flex flex-col gap-[2px]'>
-                {
-                    product.itemPhotos
-                        .filter((item, _index) => product.itemPhotos[_index] != product.itemPhotos[selectedPhoto])
-                        .map((item, index) => <button onClick={() => setSelectedPhoto(index)}><img src={item} key={index} className={`h-6`} /></button>)
-                }
-            </div>
-        </div>
-        <div className="w-full flex gap-2 justify-center">
-            {product.itemPhotos[1] && (
-                <i
-                    className={`${selectedPhoto == 0 ? "fa-solid" : "fa-regular"
-                        } fa-circle-dot`}
-                ></i>
-            )}
-            {product.itemPhotos[1] && (
-                <i
-                    className={`${selectedPhoto == 1 ? "fa-solid" : "fa-regular"
-                        } fa-circle-dot`}
-                ></i>
-            )}
-            {product.itemPhotos[2] && (
-                <i
-                    className={`${selectedPhoto == 2 ? "fa-solid" : "fa-regular"
-                        } fa-circle-dot`}
-                ></i>
-            )}
-            {product.itemPhotos[3] && (
-                <i
-                    className={`${selectedPhoto == 3 ? "fa-solid" : "fa-regular"
-                        } fa-circle-dot`}
-                ></i>
-            )}
-        </div>
-    </div>
-    <div id="product_details-div">
-        <p id="product-name">Product name</p>
-        <p className="m-0 ">
-            Product description will go here with a max of 30 words
-        </p>
-        {product && (
-            <div className="flex gap-[50%] w-full">
-                <p>{handleItemRating(product.rating, "")} </p>
-                <p>(100)</p>
-            </div>
-        )}
-        {product && <p id="product-price">$ {product.price}</p>}
-
-        <div className="dark:text-black flex items-center gap-5 bg-white w-fit px-3 rounded-2xl">
-            <button
-                className="text-[.9rem] bg-transparent"
-                onClick={() => handleSelectedNoOfItems(-1)}
-            >
-                -
-            </button>
-            <p>{selectedNoOfItems}</p>
-            <button
-                className="text-[.9rem] bg-transparent"
-                onClick={() => handleSelectedNoOfItems(1)}
-            >
-                +
-            </button>
-        </div>
-        <p id="remaining-items-p">
-            Only few(set number) remaining.Don't miss.
-        </p>
-        <div className="flex justify-around w-[90%] mt-[10%]">
-            <button
-                className="rounded-lg py-[1px] px-[20px]  bg-green-700 text-white"
-                onClick={handleBuyNow}
-            >
-                Buy Now
-            </button>
-        </div>
-        <div className="mt-5">
-            <p className="m-0">Free delivery</p>
-            <p className="m-0">
-                Return statement eg. money back garantee withing 10 days
-            </p>
-        </div>
-    </div>
-</div>
-<div id="product_reviews-div" className='my-4'>{/* <h3>Product reviews</h3> *</div>
- 
-    relatedProducts && (
-        <div>
-            <h3>You may also like</h3>
-            <div className="flex gap-2 pb-2">
-                {relatedProducts.map((item) => {
-                    return (
-                        <Link to={`/product/${item._id}`}
-                            key={Math.random()}
-                            className="relative rounded cursor-pointer text-black bg-lm-bg w-[18vw] pb-1"
-                        >
-                            <img
-                                className="w-[19vw] h-[19vw] rounded-tl rounded-tr"
-                                src={item.itemPhotos[0]}
-                            />
-                            <div className="flex justify-between my-1 mx-2">
-                                <p className="m-0">item x</p>
-                                <p className="m-0"> {item.price}/=</p>
-                            </div>
-                            <p className="my-1 mx-2 overflow-hidden truncate">
-                                {item.description}
-                            </p>
-                            {handleItemRating(item.rating, "text-[6px] sm:text-[10px]")}
-                        </Link>
-                    );
-                })}
-            </div>
-        </div>
-    )
-} */
