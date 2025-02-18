@@ -1,5 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
+import Navabar from "../components/Navabar";
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,22 +12,9 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <div className="w-full min-h-screen   flex flex-col items-center">
-      <div className="Navbar w-full">
-        <div className="flex items-center justify-between w-full px-4 py-1">
-          <div className="flex justify-between gap-4">
-            <div className="Hero-logo"><img src="logo.png" alt="" className=" max-h-12 " /></div>
-            <div className="flex items-center gap-4">
-              <button className="Nav-btn text-white font-semibold hover:text-gray-200"><span>Home</span></button>
-              {/* <button  className="Nav-btn text-white font-semibold hover:text-gray-200"><span>Courses</span></button>
-              <button  className="Nav-btn text-white font-semibold hover:text-gray-200"><span>Instructors</span></button> */}
-              <button className="Nav-btn text-white font-semibold hover:text-gray-200"><span>About</span></button>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="Nav-btn text-white font-semibold hover:text-gray-200"><span>Login</span></button>
-          </div>
-        </div>
-      </div>
+      <nav>
+        <Navabar />
+      </nav>
 
       <div className="w-full flex items-center  my-3">
         <div className="Hero-logo mx-auto "><img src="proskill-logo.png" alt="" className=" max-h-48 " /></div>

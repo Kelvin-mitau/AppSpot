@@ -1,18 +1,38 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Form } from '@remix-run/react'
+import imageToBase64 from '../functions/toBase64'
+//@ts-ignore
+import DropZone from 'react-drop-zone'
+import 'react-drop-zone/dist/styles.css'
 
 export default function SignUp() {
+    const [profilePicture, setProfilePicture] = useState<String | String[]>("");
+    const handleImageUpload = async (file: any) => {
+        // console.log(await imageToBase64(file))
+        const base64Val = await imageToBase64(file)
+        setProfilePicture(base64Val);
+    }
     return (
-        <div className="flex flex-col items-center justify-center h-screen dark">
+        <div className="flex flex-col items-center justify-center min-h-screen my-5">
             <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold text-gray-200 mb-4">Create ProSkill Account</h2>
+                <h2 className="text-2xl font-bold text-gray-200 mb-4">Create AppSpot Account</h2>
                 <Form className="flex flex-col">
-                    <p className='text-white'>Choose Account Type</p>
-                    <div className='flex justify-between items-center bg-gray-700 text-gray-200 mt-2 mb-4 p-2 rounded-md'>
-                        <label htmlFor="student-account-type" className='flex gap-1 cursor-pointer'>
-                            <input required type="radio" name="role" value="student" id="student-account-type" defaultChecked /> Student</label>
-                        <label htmlFor="coach-account-type" className='flex gap-1 cursor-pointer'>
-                            <input type="radio" name="role" id="coach-account-type" value="coach" /> Coach</label>
+                    <div className='my-2'>
+                        <p className='text-center mb-1 text-lg'>Profile Picture</p>
+                        {/* <DropZone
+
+                            onDrop={async (file: any) => handleImageUpload(file)}
+                        /> */}
+                        <DropZone onDrop={(file: any) => handleImageUpload(file)} accept="/image*" multiple={false}>
+                            {
+                                () => (
+                                    <div className='cursor-pointer relative h-52 rounded-full aspect-square bg-slate-500 mx-auto'>
+                                        <img src="/user.png" alt="" />
+                                        <p className='absolute z-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-black
+                                        bg-white bg-opacity-80 rounded text-center'>Click or drag and drop.</p>
+                                    </div>)
+                            }
+                        </DropZone>
                     </div>
                     <div className="flex space-x-4 mb-4">
                         <input
@@ -39,6 +59,14 @@ export default function SignUp() {
                         className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                         type="text"
                         name='username'
+                    />
+                    <input
+                        required
+
+                        placeholder="Phone Number"
+                        className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+                        type="tel"
+                        name='phoneNumber'
                     />
                     <input
                         required

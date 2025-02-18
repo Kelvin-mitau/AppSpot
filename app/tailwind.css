@@ -11,7 +11,7 @@
   --light-blue: #48BFE3;
   --aqua: #80FFDB;
   --dark-purple: #1a1224;
-  --cyan: #CAF0F8;
+  --cyan: #e4faff;
 }
 
 
@@ -95,4 +95,11 @@ body{
       inset -3px -3px 10px #8385ff;
     }
   }
+}
+.Product-card{
+  border-radius: 1rem;
+  border:2px #271241 solid;
+    background: linear-gradient(145deg, #0b0018, #120029);
+    box-shadow: 5px 5px 7px #0a0016,
+      -5px -5px 7px #260056;
 }
