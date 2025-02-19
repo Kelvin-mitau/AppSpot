@@ -1,7 +1,10 @@
-import { Link, MetaFunction, useNavigate } from '@remix-run/react'
-import React, { Suspense } from 'react'
+import { json, Link, MetaFunction, useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
+import React, { Suspense, useState } from 'react'
 import Navabar from '../components/Navabar'
-import { products } from './--sampleProductData'
+//import { products } from './--sampleProductData'
+import { ActionFunction, LoaderFunction } from '@remix-run/node'
+import { Product } from '../DB/models'
+import { Form } from '@remix-run/react'
 
 export const meta: MetaFunction = () => {
     return (
@@ -14,36 +17,68 @@ export const meta: MetaFunction = () => {
 const productCategories = [
     {
         title: "E-Commerce",
-        link: "/explore/eCom"
+        link: "/explore-category/eCom"
     },
     {
         title: "Project Management",
-        link: "/explore/projectManagement"
+        link: "/explore-category/projectManagement"
     },
     {
         title: "Learning Management Systems",
-        link: "/explore/lms"
+        link: "/explore-category/lms"
     },
     {
         title: "Development and Deployment Tools",
-        link: "/explore/ddt"
+        link: "/explore-category/ddt"
     },
     {
         title: "Customer Relationshp Management",
-        link: "/explore/crm"
+        link: "/explore-category/crm"
     },
     {
         title: "Customer support",
-        link: "/explore/customerSupport"
+        link: "/explore-category/customerSupport"
     }
 ]
 
+export const loader: LoaderFunction = async () => {
+    console.log("jai")
+    const products = await Product.find().limit(50)
+    //console.log(products)
+    return json(products)
+}
+
+export const action: ActionFunction = async () => {
+    console.log("executed")
+    const products = await Product.find().limit(50)
+    //console.log(products)
+    return json(products)
+}
+
+interface productProps {
+    _id: string, title: string, description: string, productURL: string, pricingModel: string, price: number, screenshots: string[]
+}
+
 const Explore = () => {
+    const loaderData = useLoaderData<typeof loader>()
+
+    const fetcher = useFetcher()
+
+    //console.log(loaderData)
+    const [products, setProducts] = useState<productProps[]>(loaderData)
+
     const navigate = useNavigate()
+
     const handleProductReview = (event: React.MouseEvent<HTMLButtonElement>, url: string) => {
         event.stopPropagation()
         navigate(url, {})
     }
+    const handleSort = (event: any) => {
+        event.preventDefault()
+        //fetcher.submit(event.target)
+        event.target.form?.submit()
+    }
+
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Navabar />
@@ -60,12 +95,14 @@ const Explore = () => {
                         <div className='rounded border-[2px] border-transparent has-[select:focus]:border-[var(--purple-blue)] bg-slate-400 flex gap-3 my-2 
                         text-black mx-1 p-1 '>
                             <p>Sort By: </p>
-                            <select name="sort-by" id="" className='rounded bg-inherit outline-none'>
-                                <option value="">Random</option>
-                                <option value="ascendingPrice">Ascending Price</option>
-                                <option value="descendingPrice">Descending price</option>
-                                <option value="rating">Rating</option>
-                            </select>
+                            <fetcher.Form preventScrollReset method="POST">
+                                <select name="sort-by" id="" className='rounded bg-inherit outline-none' onChange={(e) => handleSort(e)}>
+                                    <option value="">Random</option>
+                                    <option value="ascendingPrice">Ascending Price</option>
+                                    <option value="descendingPrice">Descending price</option>
+                                    <option value="rating">Rating</option>
+                                </select>
+                            </fetcher.Form>
                         </div>
                     </div>
                     <div className='grid grid-cols-3 gap-1 mx-2'>

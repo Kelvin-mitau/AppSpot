@@ -5,7 +5,7 @@
  * @param {boolean} [asDataURL=true] - Whether to return a Data URL (including MIME type) or just the Base64 string. Defaults to true.
  * @returns {Promise<string | string[]>} - A Promise that resolves with the Base64 string (or Data URL) if a single file is provided, or an array of Base64 strings (or Data URLs) if multiple files are provided.  Rejects if an error occurs during conversion.
  */
-function imageToBase64(files: File | File[], asDataURL: boolean = true): Promise<string | string[]> {
+function imageToBase64(files: File | File[], asDataURL: boolean = true): Promise<string> {
   return new Promise((resolve, reject) => {
     const convertFile = (file: File): Promise<string> => {
       return new Promise((innerResolve, innerReject) => {
@@ -30,8 +30,8 @@ function imageToBase64(files: File | File[], asDataURL: boolean = true): Promise
 
 
     if (Array.isArray(files)) {
-      Promise.all(files.map(convertFile))
-        .then(results => resolve(results))
+      convertFile(files[0])
+        .then(result => resolve(result))
         .catch(error => reject(error));
     } else {
       convertFile(files)

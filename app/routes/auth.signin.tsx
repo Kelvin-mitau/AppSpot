@@ -1,12 +1,39 @@
-import React from 'react'
-import { Form } from '@remix-run/react'
+import React, { useEffect, useState } from 'react'
+import { Form, useActionData } from '@remix-run/react'
+import bcrypt from 'bcrypt'
+import { Seller } from '../DB/models'
+import { json, redirect } from '@remix-run/react'
+import { ActionFunctionArgs, ActionFunction } from '@remix-run/node'
+import { useNavigate } from '@remix-run/react'
 
 export default function SignIn() {
+    const [rememberMe, setRememberMe] = useState(false)
+    const [responseerror, setResponseError] = useState("")
+    const navigate = useNavigate()
+
+    const handeleSetRememberMe = ({ target }: any) => {
+        setRememberMe(target.checked)
+    }
+    const serverResponse: any = useActionData()
+    useEffect(() => {
+        if (!serverResponse) return
+        if (serverResponse && serverResponse.error) {
+            setResponseError(serverResponse.error)
+            return
+        }
+        else {
+            rememberMe && localStorage.setItem("userID", serverResponse._id)
+            !rememberMe && sessionStorage.setItem("userID", serverResponse._id)
+            navigate("/explore")
+        }
+
+
+    }, [serverResponse])
     return (
         <div className="flex flex-col items-center justify-center h-screen dark">
             <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold text-gray-200 mb-4">Login Into AppSpot </h2>
-                <Form className="flex flex-col" >
+                <Form className="flex flex-col" preventScrollReset >
                     <input
                         required
 
@@ -25,7 +52,7 @@ export default function SignIn() {
                         name='password'
                     />
                     <div className='flex gap-2'>
-                        <input type="checkbox" name="rememberMe" id="" className='cursor-pointer' />
+                        <input type="checkbox" name="rememberMe" id="" className='cursor-pointer' onChange={handeleSetRememberMe} />
                         <p>Remember me</p>
                     </div>
                     <p className="text-white mt-4">
@@ -45,3 +72,31 @@ export default function SignIn() {
     )
 }
 
+export const action: ActionFunction = async ({ request }: ActionFunctionArgs) => {
+    try {
+        //const newSeller = new Seller()
+        let reqBody: any = {};
+        (await request.formData()).forEach((value: any, key: any) => {
+            if (key) reqBody[key] = value;
+        });
+
+        const user = await Seller.findOne({
+            $or:
+            {
+                //@ts-ignore
+                email: reqBody.identification,
+                username: reqBody.identification
+            }
+        });
+        !user && json({ error: "Email or password is incorrect" })
+        // const checkPassword =   
+        if (!user || !(await bcrypt.compare(reqBody.password, user.password))) {
+            return json({ error: "Email or password is incorrect" });
+        }
+        return json(user)
+    }
+    catch (err) {
+        console.log(err)
+        return json({ error: "Oops..Something went wrong" })
+    }
+}
