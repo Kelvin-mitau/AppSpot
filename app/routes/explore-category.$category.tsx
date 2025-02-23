@@ -1,10 +1,38 @@
 
 import React, { Suspense } from 'react'
 import { useParams } from '@remix-run/react'
-import Navabar from '../components/Navabar'
+import Navabar from '../components/Navbar'
 import { products } from './--sampleProductData'
 import { Link } from '@remix-run/react'
 import { useNavigate } from '@remix-run/react'
+import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node'
+import { Product } from '../DB/models'
+import { json } from '@remix-run/react'
+
+export const loader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
+    const category = new URL(request.url).pathname.split("/")
+    const sortBy = new URL(request.url).searchParams.get("sort")
+    console.log(category)
+
+    const handleSort = async () => {
+        if (sortBy == "ascendingPrice") {
+            return await Product.find({ category }).limit(50).sort({ price: 1 })
+        }
+        else if (sortBy == "descendingPrice") {
+            return await Product.find({ category }).limit(50).sort({ price: -1 })
+        }
+        else if (sortBy == "rating") {
+            return await Product.find({ category }).limit(50).sort({ rating: -1 })
+        }
+        else {
+            return await Product.find({ category }).limit(50)
+        }
+    }
+    //const products = await handleSort()
+    //console.log(products)
+    return json([])
+}
+
 
 function ExploreCategory() {
     const { category } = useParams()

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Form, json, redirect, useActionData } from '@remix-run/react'
 import imageToBase64 from '../functions/toBase64'
 import { ActionFunction, ActionFunctionArgs } from '@remix-run/node'
-import { Seller } from '../DB/models'
+import { User } from '../DB/models'
 import bcrypt from "bcrypt"
 
 
@@ -10,9 +10,9 @@ import bcrypt from "bcrypt"
 const SignUp = () => {
     const [profilePicture, setProfilePicture] = useState<string>("");
     const [serverResponseError, setServerResponseError] = useState<undefined | string>("");
-    const handleImageUpload = async (file: any) => {
+    const handleImageUpload = async (files: any) => {
         // console.log(await imageToBase64(file))
-        const base64Val = await imageToBase64(file)
+        const base64Val = await imageToBase64(files[0])
         setProfilePicture(base64Val);
     }
     const serverRes: any = useActionData()
@@ -36,8 +36,8 @@ const SignUp = () => {
                         <p className='text-center mb-1 text-lg'>Profile Picture(Click to upload)</p>
                         <div className="flex justify-center w-full">
                             <label htmlFor='profile-picture-input' className='cursor-pointer relative h-52 rounded-full aspect-square bg-slate-500 mx-auto'>
-                                <img src="/user.png" alt="" className='h-52' />
-                                <input id='profile-picture-input' type='file' accept='image/*' onChange={(e: any) => handleImageUpload(e.target.value)} className='hidden' />
+                                <img src="/user.png" alt="" className='h-52 aspect-square rounded-full' />
+                                <input id='profile-picture-input' type='file' accept='image/*' onChange={(e) => handleImageUpload(e.target.files)} className='hidden' />
                                 {/* <p className='absolute z-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-black
                                             bg-white bg-opacity-80 rounded text-center'>Click or drag and drop.</p> */}
                             </label>
@@ -75,11 +75,7 @@ const SignUp = () => {
                         type="text"
                         name='username'
                     />
-                    <textarea name="bio" id="bio-iput" cols={3}
-                        placeholder='Bio'
-                        className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 
-                        focus:ring-blue-500 transition ease-in-out duration-150 resize-y"
-                    ></textarea>
+
                     <input
                         required
 
@@ -134,7 +130,7 @@ export default SignUp
 
 export const action: ActionFunction = async ({ request }: ActionFunctionArgs) => {
     try {
-        //const newSeller = new Seller()
+        //const newUser = new User()
         let reqBody: any = {};
         (await request.formData()).forEach((value: any, key: any) => {
             if (key) reqBody[key] = value;
@@ -143,19 +139,19 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
             return json({ error: "Passwords do not match" })
         }
         reqBody.password = await bcrypt.hash(reqBody.password, 10)
-        if ((await Seller.find({ email: reqBody.email })).length > 0) {
+        if ((await User.find({ email: reqBody.email })).length > 0) {
             return json({ error: "This email is already registered" })
         }
-        if ((await Seller.find({ phoneNumber: reqBody.phoneNumber })).length > 0) {
+        if ((await User.find({ phoneNumber: reqBody.phoneNumber })).length > 0) {
             return json({ error: "This phone number is already registered" })
         }
-        if ((await Seller.find({ username: reqBody.username })).length > 0) {
+        if ((await User.find({ username: reqBody.username })).length > 0) {
             return json({ error: "This username is already taken" })
         }
 
-        const newSeller = new Seller(reqBody)
-        await newSeller.save()
-        console.log(newSeller)
+        const newUser = new User(reqBody)
+        await newUser.save()
+        console.log(newUser)
         return redirect('/explore')
     } catch (err) {
         console.log(err)

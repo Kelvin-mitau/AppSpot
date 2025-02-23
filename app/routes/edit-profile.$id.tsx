@@ -1,25 +1,72 @@
-import React, { useState } from 'react'
-import { Form } from '@remix-run/react'
+import React, { useState, Suspense } from 'react'
+import { Form, redirect } from '@remix-run/react'
+import { useLoaderData } from '@remix-run/react'
+import imageToBase64 from '../functions/toBase64'
+import { ActionFunction, ActionFunctionArgs, LoaderFunction, LoaderFunctionArgs, json } from '@remix-run/node'
+import { User } from '../DB/models'
+
+
+export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
+    /*  const splittedPath = new URL(request.url).pathname.split("/") */
+    const userID = params.id
+    console.log(userID)
+
+
+    /* Set user ID to user ID on the path */
+
+
+    const user = await User.findById(userID)
+    return json(user)
+}
+
+export const action: ActionFunction = async ({ params, request }: ActionFunctionArgs) => {
+    const userID = params.id
+    console.log(userID)
+    const formData: any = {};
+    (await request.formData()).forEach((value: any, key: any) => {
+        if (key && value) formData[key] = value;
+    });
+    console.log(formData.bio)
+    await User.findByIdAndUpdate(userID, {
+        $set: formData
+    })
+
+    return redirect(`/profile/${userID}`)
+}
 
 function EditProfile() {
     const [editField, setEditField] = useState<null | string>(null)
-    const sampleData = {
-        _id: "1",
-        username: "Kefini",
-        firstName: "Kelvin",
-        lastName: "Mitau",
-        middleName: "John",
-        profilePicture: "/random.png",
-        createdAt: "March 2023",
-        bio: "Hello world this is my bio",
-        phone: "+254768067032",
-        email: "kefini@gmail.com",
-        tags: ["UI Designer", "System  Designer", "Web Developer", "Fullstack developer"]
+
+
+    interface userData {
+        _id: string,
+        username: string,
+        firstName: string,
+        lastName: string,
+        middleName: string,
+        profilePicture: string,
+        createdAt: string,
+        bio: string,
+        phone: string,
+        email: string,
+        tags: string[]
     }
+    const userData: userData = useLoaderData()
+
+
+    const [fieldsData, setFieldData] = useState({
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        middleName: userData.middleName,
+        bio: userData.bio
+    })
+
+    const [profilePicture, setProfilePicture] = useState<string>(userData.profilePicture ? userData.profilePicture : "/random.png")
+    const [profilePictureIsChanged, setProfilePictureIsChanged] = useState(false)
 
     const EditButton: React.FC<{ field: string }> = ({ field }) => {
         return (
-            <button onClick={() => setEditField(field)}>
+            <button onClick={() => setEditField(field)} type='button'>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className='h-6 fill-[var(--purple-blue)]'>
                     <path d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 
                 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 
@@ -31,57 +78,80 @@ function EditProfile() {
         )
     }
 
+    const handleSubmit = (event: any) => {
+        if (profilePictureIsChanged) {
+            const profilePicInput = document.createElement("input")
+            profilePicInput.name = "profilePicture"
+            profilePicInput.value = profilePicture
+            profilePicInput.style.display = "hidden"
+            event.target.append(profilePicInput)
+        }
+    }
+    const handleProfilePictureUpload = (event: any) => {
+        imageToBase64(event.target.files[0])
+            .then(data => setProfilePicture(data))
+            .then(() => setProfilePictureIsChanged(true))
+            .catch(err => console.log(err))
+    }
     return (
-        <Form className='max-w-[600px] mx-auto my-5 text-white'>
-            <h1 className='text-white text-center text-2xl my-2 '>Click the edit icon to update a field</h1>
-            <img src={sampleData.profilePicture} alt="Profile picture" className='rounded-full w-40 aspect-square
-                     border-lg border-white mx-auto' />
-
-            <div className='w-full flex items-center my-2 '>
-                <label htmlFor="profile-picture-update" className='bg-[var(--purple-blue)] cursor-pointer px-2 py-1 rounded mx-auto'>
-                    Change Profile Picture
-                    <input type="file" accept="*/image" name="" id="profile-picture-update" className='hidden' />
-                </label>
-            </div>
-            <div className='flex item w-full'>
-                <div className='flex flex-col  mx-auto w-full'>
-                    <div className='flex justify-between bg-[#ffffff1f] my-2 py-1 px-2 rounded'>
-                        <p className='text-center text-lg ' ><i>First Name: </i>
-                            {editField == 'firstName' ? <input defaultValue={sampleData.firstName} className='outline-none rounded text-black' /> : sampleData.firstName}
-                        </p>
-                        <EditButton field='firstName' />
-                    </div>
-                    <div className='flex justify-between bg-[#ffffff1f] my-2 py-1 px-2 rounded'>
-                        <p className='text-center text-lg ' > <i>Last Name: </i>
-                            {editField == 'lastName' ? <input defaultValue={sampleData.lastName} className='outline-none rounded text-black' /> : sampleData.lastName}
-                        </p>
-                        <EditButton field='lastName' />
-                    </div>
-                    <div className='flex justify-between bg-[#ffffff1f] my-2 py-1 px-2 rounded'>
-                        <p className='text-center text-lg ' ><i>Middle Name: </i>
-                            {editField == 'middleName' ? <input defaultValue={sampleData.middleName} className='outline-none rounded text-black' /> : sampleData.middleName}
-                        </p>
-                        <EditButton field='middleName' />
+        <Suspense fallback={<div>Loading</div>}>
+            <Form method='post' className='max-w-[600px] mx-auto my-5 text-white' onSubmit={handleSubmit}>
+                <h1 className='text-white text-center text-2xl my-2 '>Click the edit icon to update a field</h1>
+                <img src={profilePicture} alt="Profile picture" className='rounded-full w-40 aspect-square
+                         border-lg border-white mx-auto' />
+                <div className='w-full flex items-center my-2 '>
+                    <label htmlFor="profile-picture-update" className='bg-[var(--purple-blue)] cursor-pointer px-2 py-1 rounded mx-auto'>
+                        Change Profile Picture
+                        <input type="file" accept="image/*" name="" id="profile-picture-update" className='hidden' onChange={handleProfilePictureUpload} />
+                    </label>
+                </div>
+                <div className='flex item w-full'>
+                    <div className='flex flex-col  mx-auto w-full'>
+                        <div className='flex justify-between bg-[#ffffff1f] my-2 py-1 px-2 rounded'>
+                            <p className='text-center text-lg flex ' > <i className='mx-1'>First Name: </i>
+                                <input defaultValue={userData.firstName}
+                                    onChange={({ target }) => setFieldData({ ...fieldsData, [target.name]: target.value })}
+                                    name="firstName" className={`mx-1 px-1 -none rounded text-black ${editField == 'firstName' ? "block" : "hidden"}`} />
+                                {editField != 'firstName' && fieldsData.firstName}
+                            </p>
+                            <EditButton field='firstName' />
+                        </div>
+                        <div className='flex justify-between bg-[#ffffff1f] my-2 py-1 px-2 rounded'>
+                            <p className='text-center text-lg flex ' > <i className='mx-1'>Last Name: </i>
+                                <input defaultValue={userData.lastName} onChange={({ target }) => setFieldData({ ...fieldsData, [target.name]: target.value })}
+                                    name="lastName" className={`mx-1 px-1 -none rounded text-black ${editField == 'lastName' ? "block" : "hidden"}`} />
+                                {editField != 'lastName' && fieldsData.lastName}
+                            </p>
+                            <EditButton field='lastName' />
+                        </div>
+                        <div className='flex justify-between bg-[#ffffff1f] my-2 py-1 px-2 rounded'>
+                            <p className='text-center text-lg flex ' > <i className='mx-1'>Middle Name: </i>
+                                <input defaultValue={userData.middleName} onChange={({ target }) => setFieldData({ ...fieldsData, [target.name]: target.value })}
+                                    name="middleName" className={`mx-1 px-1 -none rounded text-black ${editField == 'middleName' ? "block" : "hidden"}`} />
+                                {editField != 'middleName' && fieldsData.middleName}
+                            </p>
+                            <EditButton field='middleName' />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className=' bg-[#ffffff1f] my-2 py-1 px-2 rounded'>
+                <div className=' bg-[#ffffff1f] my-2 py-1 px-2 rounded'>
+                    <div className='w-full flex justify-between'>
+                        <p className='text-center text-lg mx-1 ' ><i>Bio: </i>
+                        </p>
+                        <EditButton field='bio' />
+                    </div>
+                    <div>
+                        <textarea defaultValue={userData.bio} onChange={({ target }) => setFieldData({ ...fieldsData, [target.name]: target.value })}
+                            name='bio' className={`outline-none rounded text-black resize-y w-full my-2 ${editField != 'bio' && "hidden"}`} />
+                        {editField != 'bio' && fieldsData.bio}
+                    </div>
+                </div>
                 <div className='w-full flex justify-between'>
-                    <p className='text-center text-lg ' ><i>Bio: </i>
-
-                    </p>
-                    <EditButton field='bio' />
+                    <button className='px-3 py-1 rounded bg-[red]' type='button' onClick={() => setEditField(null)}>Cancel</button>
+                    <button className='px-3 py-1 rounded bg-[var(--purple-blue)]'>Confirm</button>
                 </div>
-                <div>
-                    {editField == 'bio' ? <textarea defaultValue={sampleData.bio} className='outline-none rounded text-black resize-y w-full my-2' /> : sampleData.bio}
-                </div>
-            </div>
-            <div className='w-full flex justify-between'>
-                <button className='px-3 py-1 rounded bg-[red]' type='button' onClick={() => setEditField(null)}>Cancel</button>
-                <button className='px-3 py-1 rounded bg-[var(--purple-blue)]'>Confirm</button>
-            </div>
-
-        </Form>
+            </Form>
+        </Suspense>
     )
 }
 

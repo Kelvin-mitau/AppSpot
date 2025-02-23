@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Form, useActionData } from '@remix-run/react'
 import bcrypt from 'bcrypt'
-import { Seller } from '../DB/models'
+import { User } from '../DB/models'
 import { json, redirect } from '@remix-run/react'
 import { ActionFunctionArgs, ActionFunction } from '@remix-run/node'
 import { useNavigate } from '@remix-run/react'
@@ -74,13 +74,13 @@ export default function SignIn() {
 
 export const action: ActionFunction = async ({ request }: ActionFunctionArgs) => {
     try {
-        //const newSeller = new Seller()
+        //const newUser = new User()
         let reqBody: any = {};
         (await request.formData()).forEach((value: any, key: any) => {
             if (key) reqBody[key] = value;
         });
 
-        const user = await Seller.findOne({
+        const user: any = await User.findOne({
             $or:
             {
                 //@ts-ignore

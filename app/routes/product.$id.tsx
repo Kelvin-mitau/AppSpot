@@ -1,16 +1,32 @@
 import React, { Suspense } from 'react'
 import { useState } from 'react';
-import { useParams } from '@remix-run/react';
+import { useLoaderData, useParams } from '@remix-run/react';
 import handleItemRating from '../components/itemRating';
 import { Link } from '@remix-run/react';
 import { products } from './--sampleProductData';
-import Navabar from '../components/Navabar';
+import Navabar from '../components/Navbar';
+import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
+import { Product } from '../DB/models';
+import { json } from '@remix-run/react';
 
-function Product() {
+export const loader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
+    const splittedPath = new URL(request.url).pathname.split("/")
+    const productId = splittedPath[splittedPath.length - 1]
+    //console.log(productId)
+
+
+    /* Set product ID to product ID on the path */
+
+
+    const product = await Product.findById("67b622ae33dd6406f4d19ea7")
+    return json(product)
+}
+
+function ProductPage() {
 
     const { id } = useParams();
-    const product = products[1]
-    const [selectedPhoto, setSelectedPhoto] = useState(product.screenshots[0])
+    const product: any = useLoaderData()
+    const [selectedPhoto, setSelectedPhoto] = useState(product?.screenshots[0])
     const [selectedNoOfItems, setSelectedNoOfItems] = useState(0)
 
     const relatedProducts = [{
@@ -34,11 +50,12 @@ function Product() {
     }
 
     return (
-        <>
+        <Suspense fallback={<div>Loading...</div>}>
             <nav className='w-full'>
                 <Navabar />
             </nav>
-            <Suspense fallback={<div>Loading...</div>}>
+
+            {product ? (<div>
                 <div className="sm:grid grid-cols-2 gap-[2rem] place-items-start ml-1 my-4">
                     <div className=' mx-auto h-full'>
                         <div className=" flex   h-[100%] ">
@@ -47,12 +64,11 @@ function Product() {
                             </div>
                             <div className='flex flex-col gap-[2px]'>
                                 {product.screenshots
-                                    .filter((item, _index) => product.screenshots[_index] != selectedPhoto)
-                                    .map((item, index) => <button onClick={() => setSelectedPhoto(item)} className='cursor-pointer'>
+                                    .filter((_: any, _index: number) => product.screenshots[_index] != selectedPhoto)
+                                    .map((item: string, index: number) => <button onClick={() => setSelectedPhoto(item)} className='cursor-pointer'>
                                         <img src={item} key={index} className={`h-10 border border-slate-400 rounded aspect-[2/1.5]`} /></button>)}
                             </div>
                         </div>
-
                     </div>
                     <div id="product_details-div">
                         <p id="product-name" className='text-white text-xl my-2'>{product.title}</p>
@@ -61,7 +77,7 @@ function Product() {
                         </p>
                         {product && (
                             <div className="flex gap-[50%] w-full">
-                                <p>{handleItemRating(product.customerReviews.reduce((accumulator, item) => {
+                                <p>{handleItemRating(product.customerReviews.reduce((accumulator: number, item: { rating: number }) => {
                                     return accumulator + item.rating;
                                 }, 0), "")} </p>
                                 <p>({product.customerReviews.length})</p>
@@ -71,16 +87,13 @@ function Product() {
                             {product.pricingModel == "freemium" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>Free</p>}
                             {product.pricingModel == "subscription" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>$ {product.price} per month</p>}
                             {product.pricingModel == "oneTime" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>$ {product.price} one time</p>}
-
                         </div>
-
-
                         <p className="text-lg text-white">
                             Features
                         </p>
                         <ol className='list-inside list-decimal'>
                             {
-                                product.features.map((feature, _index) => <li key={_index}>{feature}</li>)
+                                product.features.map((feature: string, _index: number) => <li key={_index}>{feature}</li>)
                             }
                         </ol>
                         <div className='my-2'>
@@ -95,7 +108,6 @@ function Product() {
                                 Buy Now
                             </button>
                         </div>
-
                         <div id="product_reviews-div" className='my-4 text-lg text-white'>
                             <h3>Product reviews</h3>
                             {product.customerReviews.length == 0 && <p>There are no customer revies yet.</p>}
@@ -127,13 +139,13 @@ function Product() {
                                     </Link>
                                 )
                             })}
-
                         </div>
                     </div>)}
-            </Suspense>
-        </>
+            </div>) : <div>Nothing here</div>}
+
+        </Suspense>
 
     )
 }
 
-export default Product
+export default ProductPage

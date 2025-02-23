@@ -16,12 +16,12 @@ const productSchema = new mongoose.Schema({
     category:{type:String, required:true},
     description:{type:String, required:true},
     pricetype:{type:Number,required:true},
-    seller:{type: mongoose.Schema.ObjectId,ref:"seller"},
+    user:{type: mongoose.Schema.ObjectId,ref:"user"},
     //BAnkDetails
 
 })
 
-const sellerSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     firstName:{type:String,required:true},
     lastName:{type:String,required:true},
     middleName:{type:String,default:""},
@@ -30,18 +30,19 @@ const sellerSchema = new mongoose.Schema({
     bio:{type:String},
     tags:{type:Array},
     password:{type:String, required:true},
-    email:{type:String,required:true}
-
-})
+    phone:{type:String, required:true},
+    email:{type:String,required:true},
+    createdAt:Date
+},{timestamps:{createdAt:"createdAt"}})
 
 const transactionSchema = new mongoose.Schema({
-    seller:{type:mongoose.Schema.ObjectId,required:true,ref:"seller"},
+    user:{type:mongoose.Schema.ObjectId,required:true,ref:"user"},
     product:{type:mongoose.Schema.ObjectId,required:true,ref:"product"},
     buyer:{type:Object,required:true}
 })
 
-const Product = mongoose.model("product",productSchema)
-const Seller = mongoose.model("seller",sellerSchema)
-const Transction = mongoose.model("transaction",transactionSchema)
+const Product = mongoose.models.Product || mongoose.model("product",productSchema)
+const User = mongoose.models.User || mongoose.model("user",userSchema)
+const Transction = mongoose.models.Transaction || mongoose.model("transaction",transactionSchema)
 
-export {Product,Seller,Transction}
+export {Product,User,Transction}
