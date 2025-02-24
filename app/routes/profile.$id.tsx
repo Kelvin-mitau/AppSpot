@@ -1,9 +1,10 @@
 import { LoaderFunction, LoaderFunctionArgs, json } from '@remix-run/node'
 import { User } from '../DB/models'
 
-import { Link, Params, useLoaderData, useParams } from '@remix-run/react'
+import { Link, Params, useLoaderData, useNavigate, useParams } from '@remix-run/react'
 import React from 'react'
 import Navabar from '../components/Navbar'
+import Layout from './Layout'
 
 export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
     const userID = params.id
@@ -29,16 +30,29 @@ function Profile() {
         profilePicture: string | null,
         createdAt: string,
         bio: string,
-        phone: string,
+        phoneNumber: string,
         email: string,
         tags: string[]
     }
     const userData: userData = useLoaderData()
+
+    const navigate = useNavigate()
+
+    const formatDate = (originalDate: string) => {
+        const dateObject = new Date(originalDate);
+        const splittedDate = dateObject.toISOString().split('T')[0];
+        const formattedDate = splittedDate.split("-").reverse().join("/")
+        return formattedDate;
+    }
+
+    const handleLogOut = () => {
+        localStorage.removeItem("userID")
+        sessionStorage.removeItem("userID")
+        navigate("/explore")
+    }
     return (
-        <>
-            <nav className='w-full'>
-                <Navabar />
-            </nav>
+        <Layout>
+
             {userData ? (<div className='mx-auto flex flex-col items-center justify-center text-white'>
                 <div className='relative bg-[#0000003f] pb-5 px-3 my-36 min-w-64 sm:min-w-72 rounded-lg max-w-[28rem]'>
                     <img src={userData.profilePicture ? userData.profilePicture : "/random.png"} alt="Profile picture" className='absolute  -translate-y-1/2 rounded-full w-40 aspect-square
@@ -67,7 +81,7 @@ function Profile() {
                                   207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z" /></svg>
                                 <span>Phone</span>
                             </p>
-                            <p>{userData.phone}</p>
+                            <p>{userData.phoneNumber}</p>
                         </div>
                         <div className='flex justify-between'>
                             <p className='flex gap-1 items-center text-slate-300' >
@@ -76,17 +90,31 @@ function Profile() {
                                  64l0-32c0-17.7-14.3-32-32-32S96 14.3 96 32zM448 192L0 192 0 464c0 26.5 21.5 48 48 48l352 0c26.5 0 48-21.5 48-48l0-272z" /></svg>
                                 <span>Joined</span>
                             </p>
-                            <p>{userData.createdAt}</p>
+                            <p>{formatDate(userData.createdAt)}</p>
                         </div>
                     </div>
-                    <div className='rounded bg-[#ffffff1f] my-2 p-2 gap-1 flex flex-wrap justify-around text-sm sm:text-base'>
+                    {userData.tags && <div className='rounded bg-[#ffffff1f] my-2 p-2 gap-1 flex flex-wrap justify-around text-sm sm:text-base'>
                         {userData.tags.map((item, _index) => <p key={_index} className='rounded px-2 py-1 w-fit text-nowrap my-1 bg-[#ffffff2f]'>{item}</p>)}
-                    </div>
+                    </div>}
+                    <button
+                        className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150 w-full"
+                        onClick={() => navigate(`/account/${userData._id}`)}
+                    >
+                        My Account
+                    </button>
+
+                    <button
+                        onClick={handleLogOut}
+                        className="bg-gradient-to-r from-red-700 to-red-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-red-800 hover:to-red-600 transition ease-in-out duration-150 w-full"
+                    >
+                        Log Out
+                    </button>
                 </div>
-                <div></div>
+                <div>
+                </div>
             </div>)
                 : <div>Nothing here </div>}
-        </>
+        </Layout>
     )
 }
 

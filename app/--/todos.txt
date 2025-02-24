@@ -1,0 +1,2 @@
+1. Auth password must be atleat 7 characters
+2.Fix error on register product page

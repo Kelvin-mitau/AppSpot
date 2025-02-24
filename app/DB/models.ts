@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema({
     category:{type:String, required:true},
     description:{type:String, required:true},
     pricetype:{type:Number,required:true},
-    user:{type: mongoose.Schema.ObjectId,ref:"user"},
+    seller:{type: mongoose.Schema.ObjectId,ref:"user"},
     //BAnkDetails
 
 })
@@ -28,21 +28,23 @@ const userSchema = new mongoose.Schema({
     profilePicture:{type:String},
     username:{type:String,required:true},
     bio:{type:String},
-    tags:{type:Array},
+    tags:{type:String},
     password:{type:String, required:true},
-    phone:{type:String, required:true},
+    phoneNumber:{type:String, required:true},
     email:{type:String,required:true},
-    createdAt:Date
+    createdAt:Date,
+    businessDetails:{type:Object},
+    paymentsDetails:{type:Object}
 },{timestamps:{createdAt:"createdAt"}})
 
 const transactionSchema = new mongoose.Schema({
-    user:{type:mongoose.Schema.ObjectId,required:true,ref:"user"},
+    seller:{type:mongoose.Schema.ObjectId,required:true,ref:"user"},
     product:{type:mongoose.Schema.ObjectId,required:true,ref:"product"},
     buyer:{type:Object,required:true}
 })
 
 const Product = mongoose.models.Product || mongoose.model("product",productSchema)
 const User = mongoose.models.User || mongoose.model("user",userSchema)
-const Transction = mongoose.models.Transaction || mongoose.model("transaction",transactionSchema)
+const Transaction = mongoose.models.Transaction || mongoose.model("transaction",transactionSchema)
 
-export {Product,User,Transction}
+export {Product,User,Transaction}

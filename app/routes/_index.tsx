@@ -6,9 +6,9 @@ import Layout from "./Layout";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
+    { title: "AppSpot" },
+    { name: "description", content: "AppSpot is your go-to platform for buying and selling predeveloped SaaS products. Explore a vast marketplace of software solutions designed to boost your business productivity and innovation. Join today and transform your operations with ready-to-use applications tailored to your needs." }
+  ]
 };
 
 export default function Index() {

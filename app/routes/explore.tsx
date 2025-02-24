@@ -91,6 +91,7 @@ const Explore = () => {
         categoryParam && setSearchParams({ sort: target.value, category: categoryParam })
         !categoryParam && setSearchParams({ sort: target.value })
     }
+
     return (
         <Layout>
             <Suspense fallback={<div>Loading...</div>}>

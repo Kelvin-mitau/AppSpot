@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Form, json, redirect, useActionData } from '@remix-run/react'
+import { Form, json, redirect, useActionData, useNavigate } from '@remix-run/react'
 import imageToBase64 from '../functions/toBase64'
 import { ActionFunction, ActionFunctionArgs } from '@remix-run/node'
 import { User } from '../DB/models'
@@ -9,14 +9,28 @@ import bcrypt from "bcrypt"
 
 const SignUp = () => {
     const [profilePicture, setProfilePicture] = useState<string>("");
-    const [serverResponseError, setServerResponseError] = useState<undefined | string>("");
-    const handleImageUpload = async (files: any) => {
-        // console.log(await imageToBase64(file))
-        const base64Val = await imageToBase64(files[0])
-        setProfilePicture(base64Val);
+    const [serverResponseError, setResponseError] = useState<undefined | string>("");
+    const [rememberMe, setRememberMe] = useState(false)
+    const navigate = useNavigate()
+
+    const handeleSetRememberMe = ({ target }: any) => {
+        setRememberMe(target.checked)
     }
-    const serverRes: any = useActionData()
-    useEffect(() => { if (serverRes && typeof (serverRes.error)) setServerResponseError(serverRes.error) }, [serverRes])
+    const serverResponse: any = useActionData()
+    useEffect(() => {
+        if (!serverResponse) return
+        if (serverResponse && serverResponse.error) {
+            setResponseError(serverResponse.error)
+            return
+        }
+        else {
+            rememberMe && localStorage.setItem("userID", serverResponse._id)
+            !rememberMe && sessionStorage.setItem("userID", serverResponse._id)
+            navigate("/explore")
+        }
+
+
+    }, [serverResponse])
 
     const handleSubmit = (event: any) => {
         //event.preventDefault()
@@ -32,17 +46,7 @@ const SignUp = () => {
             <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold text-gray-200 mb-4">Create AppSpot Account</h2>
                 <Form className="flex flex-col" method='put' preventScrollReset onSubmit={handleSubmit}>
-                    <div className='my-2'>
-                        <p className='text-center mb-1 text-lg'>Profile Picture(Click to upload)</p>
-                        <div className="flex justify-center w-full">
-                            <label htmlFor='profile-picture-input' className='cursor-pointer relative h-52 rounded-full aspect-square bg-slate-500 mx-auto'>
-                                <img src="/user.png" alt="" className='h-52 aspect-square rounded-full' />
-                                <input id='profile-picture-input' type='file' accept='image/*' onChange={(e) => handleImageUpload(e.target.files)} className='hidden' />
-                                {/* <p className='absolute z-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-black
-                                            bg-white bg-opacity-80 rounded text-center'>Click or drag and drop.</p> */}
-                            </label>
-                        </div>
-                    </div>
+
                     <div className="flex space-x-4 mb-4">
                         <input
                             required
@@ -108,7 +112,10 @@ const SignUp = () => {
                         type="password"
                         name="confirmPassword"
                     />
-
+                    <div className='flex gap-2'>
+                        <input type="checkbox" name="rememberMe" id="" className='cursor-pointer' onChange={handeleSetRememberMe} />
+                        <p>Remember me</p>
+                    </div>
                     <p className="text-white mt-4">
                         Already have an account?
                         <a className="mx-2 text-blue-500 -200 hover:underline mt-4" href="/sign-in"
@@ -151,8 +158,8 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
 
         const newUser = new User(reqBody)
         await newUser.save()
-        console.log(newUser)
-        return redirect('/explore')
+        //console.log(newUser)
+        return json(newUser)
     } catch (err) {
         console.log(err)
         return json({ error: "Oops..Something went wrong" })

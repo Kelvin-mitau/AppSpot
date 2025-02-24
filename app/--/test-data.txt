@@ -1,0 +1,8 @@
+Account: 
+first Name - kelvin
+last name = mitau
+middleName - Kefini
+username - Kefini
+phone - +254768067032
+email - mitauk378@gmail.com
+password - 1234
