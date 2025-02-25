@@ -43,8 +43,8 @@ const transactionSchema = new mongoose.Schema({
     buyer:{type:Object,required:true}
 })
 
-const Product = mongoose.models.Product || mongoose.model("product",productSchema)
-const User = mongoose.models.User || mongoose.model("user",userSchema)
-const Transaction = mongoose.models.Transaction || mongoose.model("transaction",transactionSchema)
+const Product = mongoose.models.product || mongoose.model("product",productSchema)
+const User = mongoose.models.user || mongoose.model("user",userSchema)
+const Transaction = mongoose.models.transaction || mongoose.model("transaction",transactionSchema)
 
 export {Product,User,Transaction}

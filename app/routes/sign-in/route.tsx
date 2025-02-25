@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Form, useActionData } from '@remix-run/react'
 import bcrypt from 'bcrypt'
-import { User } from '../DB/models'
+import { User } from '../../DB/models'
 import { json, redirect } from '@remix-run/react'
 import { ActionFunctionArgs, ActionFunction } from '@remix-run/node'
 import { useNavigate } from '@remix-run/react'

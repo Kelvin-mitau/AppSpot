@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Form, json, redirect, useActionData, useNavigate } from '@remix-run/react'
-import imageToBase64 from '../functions/toBase64'
+import imageToBase64 from '../../functions/toBase64'
 import { ActionFunction, ActionFunctionArgs } from '@remix-run/node'
-import { User } from '../DB/models'
+import { User } from '../../DB/models'
 import bcrypt from "bcrypt"
 
 

@@ -20,7 +20,7 @@ export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => 
         const accountData = await User.findById(params.id).select(["-password"])
         const products = await Product.find({ seller: params._id }).select(["title", "description", "price"])
         const purchases = await Transaction.find({ seller: params.id }).select([])
-        console.log(accountData)
+
         return json({ accountData, purchases, products })
     }
     catch (err) {
@@ -37,7 +37,6 @@ function Account() {
         products: product[]
     }>()
 
-    console.log(error)
 
     const navigate = useNavigate()
 
