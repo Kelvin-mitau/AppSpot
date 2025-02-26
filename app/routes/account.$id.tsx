@@ -18,8 +18,10 @@ interface product {
 export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
     try {
         const accountData = await User.findById(params.id).select(["-password"])
-        const products = await Product.find({ seller: params._id }).select(["title", "description", "price"])
+        const products = await Product.find({ seller: params.id }).select(["title", "description", "price", "screenshots"])
         const purchases = await Transaction.find({ seller: params.id }).select([])
+
+        console.log(products)
 
         return json({ accountData, purchases, products })
     }
@@ -49,8 +51,10 @@ function Account() {
             {
                 accountData?.businessDetails ? (
                     <div>
+
                         {products.length > 0 && <div>
-                            <div className='w-full flex justify-end'>
+                            <div className='w-full flex justify-between items-center px-2'>
+                                <h2 className='text-3xl font-semibold mx-2'>My Products</h2>
                                 <button className='rounded border-[2px] border-transparent hover:border-[var(--purple-blue)] bg-slate-400 my-2 text-black mx-1 p-1 ' onClick={() => navigate(`/register-product/${userID}`)}>
                                     New +
                                 </button>
@@ -59,7 +63,7 @@ function Account() {
                                 {products.map(product => (
                                     <div key={product._id}>
                                         <div className='Product-card h-full mx-2 flex flex-col justify-between p-1 text-white' >
-                                            <img src={product.screenshots[0]} alt="" className='w-full aspect-[2/1.5] mr-1 rounded-lg' />
+                                            <img src={product.screenshots && product.screenshots[0] ? product.screenshots[0] : "/random.png"} alt="" className='w-full aspect-[2/1.5] mr-1 rounded-lg' />
                                             <div className='mx-1'>
                                                 <p className='text-lg my-2'>{product.title}</p>
                                                 <p className='text-[0.9rem] text-slate-200'>{product.description}</p>
@@ -69,7 +73,10 @@ function Account() {
                                                     {product.pricingModel == "subscription" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>$ {product.price} per month</p>}
                                                     {product.pricingModel == "oneTime" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>$ {product.price} one time</p>}
                                                 </div>
-                                                <p className=' text-slate-100 my-1'>{purchases.length} {purchases.length == 1 ? "purchase" : "purchases"}</p>
+                                                <div className='flex justify-between'>
+                                                    <p className=' text-slate-100 my-1'>{purchases.length} {purchases.length == 1 ? "purchase" : "purchases"}</p>
+                                                    <p className='text-lg my-0.5 text-end'>${product.price}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

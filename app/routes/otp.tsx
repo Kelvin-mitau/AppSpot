@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Form } from '@remix-run/react'
-import "../../styles/otp-form.css"
+import "../styles/otp-form.css"
 import { useNavigate } from '@remix-run/react'
 import { useFetcher } from '@remix-run/react'
 

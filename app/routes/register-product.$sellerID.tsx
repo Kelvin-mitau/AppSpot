@@ -1,12 +1,51 @@
-import { useParams } from '@remix-run/react'
+import { json, redirect, useActionData, useParams } from '@remix-run/react'
 import React from 'react'
-import { Form } from 'react-router-dom';
+import { Form } from '@remix-run/react';
+import { ActionFunction, ActionFunctionArgs } from '@remix-run/node';
+import { Product } from '../DB/models';
+
+export const action: ActionFunction = async ({ request, params }: ActionFunctionArgs) => {
+    try {
+        const userID = params.sellerID
+        let reqBody: any = {};
+        (await request.formData()).forEach((value: any, key: any) => {
+            if (key) reqBody[key] = value;
+        });
+        const newProduct = await new Product({ ...reqBody, features: reqBody.features.split(",") })
+        await newProduct.save()
+        return redirect(`/account/${userID}`)
+    } catch (error) {
+        console.log(error)
+        return json({ error: "Oops...Something went wrong." })
+    }
+}
 
 function RegisterProduct() {
-    const { userID } = useParams();
+    const { sellerID } = useParams()
+    const actionData = useActionData<{ error: string }>()
+
+    console.log(actionData)
+
     const [productFeatures, setProductFeatures] = React.useState<String[]>([])
     const [productFeature, setProductFeature] = React.useState("")
     const [productPricingModel, setItemPricingModel] = React.useState("oneTime")
+
+    const handleSubmit = (e: any) => {
+
+        const form = e.target
+        const featuresInput = document.createElement("input")
+        featuresInput.name = "features"
+        featuresInput.value = productFeatures.join(",")
+        featuresInput.style.display = "none"
+        form.append(featuresInput)
+
+        const sellerIDInput = document.createElement("input")
+        sellerIDInput.name = "seller"
+        sellerIDInput.value = sellerID || ""
+        sellerIDInput.style.display = "none"
+        form.append(sellerIDInput)
+
+    }
 
     const productCategories = [
         {
@@ -37,18 +76,17 @@ function RegisterProduct() {
     return (
         <div className=' max-w-[500px] mx-auto bg-slate-900 p-3 my-2'>
             <p className='text-xl text-white my-2 text-center'>Please provide details of your product</p>
-            <Form className="flex flex-col" >
+            <Form className="flex flex-col" onSubmit={handleSubmit} method='PUT' preventScrollReset>
                 <input
                     required
-
-                    placeholder="Product name"
+                    placeholder="Product's name"
                     className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 my-2 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                     type="text"
                     name='title'
                 />
                 <label htmlFor="product-type-select-input"><p>Select Product Category</p>
                     <div className='bg-gray-700 text-gray-200 my-2 rounded py-1 w-fit'>
-                        <select name="productType" id="product-type-select-input " className='bg-gray-700 text-gray-200 '>
+                        <select name="category" id="product-type-select-input " defaultValue={"eCom"} className='bg-gray-700 text-gray-200 '>
                             {
                                 productCategories.map((item, _index) => <option value={item.value} key={_index}>{item.title}</option>)
                             }
@@ -56,19 +94,19 @@ function RegisterProduct() {
                     </div>
                 </label>
 
-                <textarea name="" id="" className='resize-y w-full bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1
+                <textarea name="description" id="" className='resize-y w-full bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1
                focus:ring-blue-500 transition ease-in-out duration-150' placeholder='Give a brief description of your product.'></textarea>
                 <input
-                    placeholder="Site's link(optional)"
+                    placeholder="Products's link"
                     className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                     type="text"
-                    name='siteLink'
+                    name='productURL'
                 />
                 <input
-                    placeholder="Documentation's link(optional)"
+                    placeholder="Documentation's link"
                     className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                     type="text"
-                    name='documentationLink'
+                    name='documentationURL'
                 />
                 <div className='flex flex-col my-2 gap-2 bg-gray-700 text-gray-200 rounded p-2'>
                     <p>Pricing Model</p>
@@ -116,6 +154,7 @@ function RegisterProduct() {
                     Upload
                 </button>
             </Form>
+            {actionData?.error && <p className='text-red-500'>{actionData?.error}</p>}
         </div>
     )
 }

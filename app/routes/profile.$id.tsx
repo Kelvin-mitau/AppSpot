@@ -32,7 +32,7 @@ function Profile() {
         bio: string,
         phoneNumber: string,
         email: string,
-        tags: string[]
+        tags: string
     }
     const userData: userData = useLoaderData()
 
@@ -94,7 +94,7 @@ function Profile() {
                         </div>
                     </div>
                     {userData.tags && <div className='rounded bg-[#ffffff1f] my-2 p-2 gap-1 flex flex-wrap justify-around text-sm sm:text-base'>
-                        {userData.tags.map((item, _index) => <p key={_index} className='rounded px-2 py-1 w-fit text-nowrap my-1 bg-[#ffffff2f]'>{item}</p>)}
+                        {userData.tags.split(",").map((item, _index) => <p key={_index} className='rounded px-2 py-1 w-fit text-nowrap my-1 bg-[#ffffff2f]'>{item}</p>)}
                     </div>}
                     <button
                         className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150 w-full"

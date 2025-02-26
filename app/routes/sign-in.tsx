@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Form, useActionData } from '@remix-run/react'
 import bcrypt from 'bcrypt'
-import { User } from '../../DB/models'
+import { User } from '../DB/models'
 import { json, redirect } from '@remix-run/react'
 import { ActionFunctionArgs, ActionFunction } from '@remix-run/node'
 import { useNavigate } from '@remix-run/react'
@@ -59,7 +59,7 @@ export default function SignIn() {
                     </div>
                     <p className="text-white mt-4">
                         Have no account account?
-                        <a className="mx-2 text-blue-500 -200 hover:underline mt-4" href="/auth/signup"
+                        <a className="mx-2 text-blue-500 -200 hover:underline mt-4" href="/sign-up"
                         >Create Account</a>
                     </p>
                     <button
@@ -78,7 +78,6 @@ export default function SignIn() {
 export const action: ActionFunction = async ({ request }: ActionFunctionArgs) => {
     try {
         //const newUser = new User()
-        console.log("reqBody")
         let reqBody: any = {};
         (await request.formData()).forEach((value: any, key: any) => {
             if (key) reqBody[key] = value;

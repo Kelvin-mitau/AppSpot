@@ -33,7 +33,7 @@ function Navbar() {
                     <button className="Nav-btn text-white font-semibold hover:text-gray-200" onClick={() => { navigate("/help") }}><span>Help</span></button>
                     <button className="Nav-btn text-white font-semibold hover:text-gray-200" onClick={() => { navigate("/about") }}><span>About</span></button>
                     {!userID ?
-                        <button className="Nav-btn text-white font-semibold hover:text-gray-200" onClick={() => { navigate("/auth/signin") }}><span>Login</span></button>
+                        <button className="Nav-btn text-white font-semibold hover:text-gray-200" onClick={() => { navigate("/sign-in") }}><span>Login</span></button>
                         : <button className="Nav-btn text-white font-semibold hover:text-gray-200" onClick={() => { navigate(`/profile/${userID}`) }}><span>Profile</span></button>
                     }
                 </div>

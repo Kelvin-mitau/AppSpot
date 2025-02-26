@@ -5,8 +5,8 @@ mongoose.connect("mongodb://localhost:27017/appspot");
 const productSchema = new mongoose.Schema({
     title:{type:String, required:true},
     productURL:{type:String, required:true},
-    documentationURL:{type:String, required:true},
-    screenshots:{type:Array,required:true},
+    documentationURL:{type:String},
+    screenshots:{type:Array},
     pricingModel: {
         type:String,
         enum:["oneTime", "freemium", "subscription"],
@@ -15,7 +15,7 @@ const productSchema = new mongoose.Schema({
     features:{type:Array,required:true},
     category:{type:String, required:true},
     description:{type:String, required:true},
-    pricetype:{type:Number,required:true},
+    price:{type:Number},
     seller:{type: mongoose.Schema.ObjectId,ref:"user"},
     //BAnkDetails
 
