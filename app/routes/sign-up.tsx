@@ -98,7 +98,7 @@ const SignUp = () => {
                     />
                     <input
                         required
-
+                        minLength={7}
                         placeholder="Password *"
                         className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                         type="password"

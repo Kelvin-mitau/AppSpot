@@ -10,10 +10,13 @@ interface ProductDetails {
     productURL: undefined | string,
     description: string,
     pricingModel: string,
-    price: number
+    price: number,
+    purchases?: number,
+    customerTotalRating: number,
+    productRatersCount: number
 }
 
-const ProductCard: React.FC<ProductDetails> = ({ _id, screenshots, title, productURL, description, pricingModel, price }) => {
+const ProductCard: React.FC<ProductDetails> = ({ _id, screenshots, title, productURL, description, pricingModel, price, purchases, productRatersCount, customerTotalRating }) => {
     const navigate = useNavigate()
 
     const handleProductReview = (event: React.MouseEvent<HTMLAnchorElement>, url: string) => {
@@ -46,8 +49,11 @@ const ProductCard: React.FC<ProductDetails> = ({ _id, screenshots, title, produc
                     <p className='text-[0.9rem] text-slate-200'>{description}</p>
                     {productURL && <Link to={productURL} className='underline' onClick={(e) => handleProductReview(e, productURL)}>Preview Link</Link>}
                     <div className="flex gap-3 items-center my-2">
-                        <div>{handleItemRating(2, "")}</div> <span>({0})</span>
+                        <div>{handleItemRating((customerTotalRating / productRatersCount), "")}</div> <span>({productRatersCount})</span>
                     </div>
+                    {
+                        typeof purchases == "number" && <p className="my-2">{purchases} {purchases == 1 ? "purchase" : "purchases"}</p>
+                    }
                     <div className='flex justify-end'>
                         {pricingModel == "freemium" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>Free</p>}
                         {pricingModel == "subscription" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>$ {price} per month</p>}

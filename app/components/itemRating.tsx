@@ -40,11 +40,18 @@ export default function handleItemRating(rating: number, style: string) {
         {solid} {solid} {solid} {solid} {blank}
       </div>
     );
-  } else {
+  } else if (rating >= 4.5 && rating <= 6) {
     return (
       <div className="flex flex-row justify-start gap-1 m-auto">
         {solid} {solid} {solid} {solid} {solid}
       </div>
     );
+  }
+  else {
+    return (
+      <div className="flex flex-row justify-start gap-1 m-auto">
+        {blank} {blank} {blank} {blank} {blank}
+      </div>
+    )
   }
 }

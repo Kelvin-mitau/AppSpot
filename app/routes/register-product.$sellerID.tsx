@@ -133,15 +133,15 @@ function RegisterProduct() {
                     <p>Pricing Model</p>
                     <div className='flex flex-col gap-0.5'>
                         <label htmlFor="pricing-model-1">
-                            <input onChange={(e) => setItemPricingModel(e.target.value)} type="radio" defaultChecked name="pricingModel" value={"oneTime"} id="pricing-model-1" className='cursor-pointer' />One time</label>
-                        <label htmlFor="pricing-model-2">
-                            <input onChange={(e) => setItemPricingModel(e.target.value)} type="radio" name="pricingModel" value={"subscription"} id="pricing-model-2" className='cursor-pointer' />Subscription</label>
+                            <input onChange={(e) => setItemPricingModel(e.target.value)} type="radio" defaultChecked name="pricingModel" value={"oneTime"} id="pricing-model-1" className='cursor-pointer' />One Time</label>
+                        {/* <label htmlFor="pricing-model-2">
+                            <input onChange={(e) => setItemPricingModel(e.target.value)} type="radio" name="pricingModel" value={"subscription"} id="pricing-model-2" className='cursor-pointer' />Subscription</label> */}
                         <label htmlFor="pricing-model-3">
                             <input onChange={(e) => setItemPricingModel(e.target.value)} type="radio" name="pricingModel" value={"freemium"} id="pricing-model-3" className='cursor-pointer' />Freemium</label>
                     </div>
                 </div>
                 {productPricingModel != "freemium" && <label htmlFor="product-price-input">
-                    <p>Price</p>
+                    <p>Price (Dollars)</p>
                     <input
                         required
                         id="product-price-input"
@@ -162,7 +162,7 @@ function RegisterProduct() {
                     <div className='flex items-center  rounded-md bg-slate-500'>
                         <input type="text" onChange={(e) => setProductFeature(e.target.value)}
                             className="bg-transparent text-gray-200 border-0 rounded-l-md p-2  focus:bg-gray-600 focus:outline-none focus:ring-1 w-full" value={productFeature} />
-                        <button type="button" onClick={() => { productFeature && setProductFeatures([...productFeatures, productFeature]); setProductFeature("") }} className='bg-slate-300 h-full rounded-r-md px-2'>
+                        <button type="button" onClick={() => { productFeature && setProductFeatures([...productFeatures, productFeature]); setProductFeature("") }} className='bg-slate-100 h-10 rounded-r-md px-2'>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className='h-6 fill-green-600'><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg></button>
                     </div>
                 </div>

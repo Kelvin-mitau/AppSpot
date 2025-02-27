@@ -38,7 +38,7 @@ export const loader: LoaderFunction = async ({ request }: LoaderFunctionArgs) =>
 
 
 interface productProps {
-    _id: string, title: string, description: string, productURL: string, pricingModel: string, price: number, screenshots: string[]
+    _id: string, title: string, description: string, productURL: string, pricingModel: string, price: number, screenshots: string[], productRatersCount: number, customerTotalRating: number
 }
 
 const Explore = () => {
@@ -116,10 +116,10 @@ const Explore = () => {
                         </div>
                         <div className='grid grid-cols-2 sm:grid-cols-3  gap-1 mx-2'>
                             {
-                                products.map(({ _id, title, description, productURL, pricingModel, price, screenshots }) => {
+                                products.map(({ _id, title, description, productURL, pricingModel, price, screenshots, productRatersCount, customerTotalRating }) => {
                                     return (
                                         <div key={_id}>
-                                            <ProductCard _id={_id} description={description} price={price} pricingModel={pricingModel} productURL={productURL} screenshots={screenshots} title={title} />
+                                            <ProductCard _id={_id} description={description} price={price} pricingModel={pricingModel} productURL={productURL} screenshots={screenshots} title={title} productRatersCount={productRatersCount} customerTotalRating={customerTotalRating} />
                                         </div>
                                     )
                                 })

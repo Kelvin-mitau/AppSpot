@@ -1,4 +1,4 @@
 1. Auth password must be atleat 7 characters
-2. Why does product have a rationg of two instead of zero
+2.OTP
 3. Add all other product categories
 4.Create checkout page

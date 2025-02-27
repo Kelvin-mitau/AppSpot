@@ -13,13 +13,13 @@ interface accountData {
     businessDetails: null | undefined | { businessName: string }
 }
 interface product {
-    _id: string, screenshots: string[], title: string, description: string, productURL: string, price: number, pricingModel: string,
+    _id: string, screenshots: string[], title: string, description: string, productURL: string, price: number, pricingModel: string, customerTotalRating: number, purchasesCount: number, productRatersCount: number
 }
 
 export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
     try {
         const accountData = await User.findById(params.id).select(["-password"])
-        const products = await Product.find({ seller: params.id }).select(["title", "description", "price", "screenshots", "price"])
+        const products = await Product.find({ seller: params.id }).select(["title", "description", "pricingModel", "price", "screenshots", "price", "purchasesCount", "productRatersCount", "customerTotalRating"])
         const purchases = await Transaction.find({ seller: params.id }).select([])
 
         return json({ accountData, purchases, products })
@@ -41,10 +41,6 @@ function Account() {
 
     const navigate = useNavigate()
 
-    const handleProductReview = (event: React.MouseEvent<HTMLButtonElement>, url: string) => {
-        event.stopPropagation()
-        navigate(url, {})
-    }
     return (
         <Layout>
             {
@@ -61,7 +57,7 @@ function Account() {
                             <div className='flex gap-1'>
                                 {products.map(product => (
                                     <div key={product._id} className='max-w-80'>
-                                        <ProductCard _id={product._id} description={product.description} price={product.price} pricingModel={product.pricingModel} productURL={product.productURL} screenshots={product.screenshots} title={product.title} />
+                                        <ProductCard _id={product._id} description={product.description} price={product.price} pricingModel={product.pricingModel} productURL={product.productURL} screenshots={product.screenshots} title={product.title} customerTotalRating={product.customerTotalRating} productRatersCount={product.productRatersCount} purchases={product.purchasesCount} />
                                     </div>
                                 ))}
                             </div>

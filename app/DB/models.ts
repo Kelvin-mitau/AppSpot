@@ -11,12 +11,14 @@ const productSchema = new mongoose.Schema({
         type:String,
         enum:["oneTime", "freemium", "subscription"],
         required:true},
-    customerReviews:{type:Array,default:[] },
+    customerTotalRating:{type:Number, default:0},
+    productRatersCount:{type:Number, default:0},
     features:{type:Array,required:true},
     category:{type:String, required:true},
     description:{type:String, required:true},
     price:{type:Number},
     seller:{type: mongoose.Schema.ObjectId,ref:"user"},
+    purchasesCount:{type:Number, default:0}
     //BAnkDetails
 
 })
