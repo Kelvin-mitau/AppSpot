@@ -1,11 +1,16 @@
-import { json, Link, MetaFunction, useFetcher, useLoaderData, useNavigate, useSearchParams } from '@remix-run/react'
 import React, { Suspense, useState, useEffect } from 'react'
-import { ActionFunction, LoaderFunction, LoaderFunctionArgs } from '@remix-run/node'
+
+import { json, MetaFunction, useLoaderData, useNavigate, useSearchParams } from '@remix-run/react'
+import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node'
+
 import { Product } from '../../DB/models'
 import Layout from '../Layout'
-import getCategoryFilter from './getProductsFilter'
+
 import getProductsFilter from './getProductsFilter'
-import NothingHere from '~/components/NothingHere'
+import NothingHere from '../../components/NothingHere'
+import ProductCard from '../../components/ProductCard'
+
+import categories from '../../functions/productCategories'
 
 export const meta: MetaFunction = () => {
     return (
@@ -15,36 +20,7 @@ export const meta: MetaFunction = () => {
     )
 }
 
-const productCategories = [
-    {
-        title: "All",
-        link: ""
-    },
-    {
-        title: "E-Commerce",
-        link: "eCom"
-    },
-    {
-        title: "Project Management",
-        link: "projectManagement"
-    },
-    {
-        title: "Learning Management Systems",
-        link: "lms"
-    },
-    {
-        title: "Development and Deployment Tools",
-        link: "ddt"
-    },
-    {
-        title: "Customer Relationshp Management",
-        link: "crm"
-    },
-    {
-        title: "Customer support",
-        link: "customerSupport"
-    }
-]
+
 
 export const loader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
     try {
@@ -52,7 +28,7 @@ export const loader: LoaderFunction = async ({ request }: LoaderFunctionArgs) =>
         //@ts-ignore
         if (sort) return json(await Product.find(filter).sort(sort))
         //@ts-ignore
-        if (!sort) return (await Product.find(filter))
+        if (!sort) return json(await Product.find(filter))
     }
     catch (err) {
         console.log("Unable to fetch", err)
@@ -70,11 +46,6 @@ const Explore = () => {
     const navigate = useNavigate()
     const [searchParams, setSearchParams] = useSearchParams()
     const products = useLoaderData<productProps[]>()
-
-    const handleProductReview = (event: React.MouseEvent<HTMLButtonElement>, url: string) => {
-        event.stopPropagation()
-        navigate(url, {})
-    }
 
     const handleSetSearchParams = (targetParam: string, value: string) => {
         const params: { [key: string]: string } = {
@@ -95,15 +66,15 @@ const Explore = () => {
     return (
         <Layout>
             <Suspense fallback={<div>Loading...</div>}>
-                {products && products.length > 0 ? <div className='flex flex-row'>
+                <div className='flex flex-row'>
                     <div className='float-left min-h-[90vh] hidden sm:block p-2 bg-[#1a1c89] bg-opacity-20 rounded my-2'>
                         <p className='text-lg'>Categories</p>
                         <div className='flex flex-col gap-2'>
-                            {productCategories.map(({ title, link }, index) => <button key={index} onClick={() => handleSetSearchParams("category", link)}>
+                            {categories.map(({ title, link }, index) => <button key={index} onClick={() => handleSetSearchParams("category", link)}>
                                 <span className='bg-white block py-1 px-2 rounded bg-opacity-15'>{title}</span></button>)}
                         </div>
                     </div>
-                    <div className='w-[80%]'>
+                    {products && products.length > 0 ? <div className='w-full sm:w-[80%]'>
                         <div className='w-full flex items-center justify-between'>
                             <div
                                 className="flex items-center border w-80 focus-within:border-indigo-500 transition duration-300 pr-3 gap-2 bg-white border-gray-500/30 h-10 rounded-[5px] overflow-hidden ml-4"
@@ -145,34 +116,22 @@ const Explore = () => {
                         </div>
                         <div className='grid grid-cols-2 sm:grid-cols-3  gap-1 mx-2'>
                             {
-                                products && products.map(({ _id, title, description, productURL, pricingModel, price, screenshots }) => {
+                                products.map(({ _id, title, description, productURL, pricingModel, price, screenshots }) => {
                                     return (
-                                        <Link to={`/product/${_id}`} key={_id}>
-                                            <div className='Product-card h-full mx-2 flex flex-col justify-between p-1 text-white' >
-                                                <img src={screenshots[0] ? screenshots[0] : "/random.png"} alt="" className='w-full aspect-[2/1.5] mr-1 rounded-lg' />
-                                                <div className='mx-1'>
-                                                    <p className='text-lg my-2'>{title}</p>
-                                                    <p className='text-[0.9rem] text-slate-200'>{description}</p>
-                                                    {productURL && <button className='underline' onClick={(e) => handleProductReview(e, productURL)}>Preview</button>}
-                                                    <div className='flex justify-end'>
-                                                        {pricingModel == "freemium" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>Free</p>}
-                                                        {pricingModel == "subscription" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>$ {price} per month</p>}
-                                                        {pricingModel == "oneTime" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>$ {price} one time</p>}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Link>
+                                        <div key={_id}>
+                                            <ProductCard _id={_id} description={description} price={price} pricingModel={pricingModel} productURL={productURL} screenshots={screenshots} title={title} />
+                                        </div>
                                     )
                                 })
                             }
                         </div>
-                    </div>
-                </div> :
-                    <div className='h-[80vh] overflow-hidden relative '>
-                        <NothingHere />
-                        <p className='absolute left-1/2 -translate-x-1/2 top-[80%] text-3xl font-semibold text-white'>Oops...Nothing here.</p>
-                    </div>
-                }
+                    </div> :
+                        <div className='h-[80vh] w-full sm:w-[80%] overflow-hidden relative '>
+                            <NothingHere />
+                            <p className='absolute left-1/2 -translate-x-1/2 top-[80%] text-3xl font-semibold text-white'>Oops...Nothing here.</p>
+                        </div>
+                    }
+                </div>
             </Suspense>
         </Layout>
     )

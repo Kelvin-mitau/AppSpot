@@ -8,12 +8,6 @@ import Layout from './Layout'
 
 export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
     const userID = params.id
-    console.log(userID)
-
-
-    /* Set user ID to user ID on the path */
-
-
     const user = await User.findById(userID)
     return json(user)
 }

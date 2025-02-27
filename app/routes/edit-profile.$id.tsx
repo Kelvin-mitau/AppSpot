@@ -1,5 +1,5 @@
 import React, { useState, Suspense } from 'react'
-import { Form, redirect } from '@remix-run/react'
+import { Form, Link, redirect } from '@remix-run/react'
 import { useLoaderData } from '@remix-run/react'
 import imageToBase64 from '../functions/toBase64'
 import { ActionFunction, ActionFunctionArgs, LoaderFunction, LoaderFunctionArgs, json } from '@remix-run/node'
@@ -147,7 +147,7 @@ function EditProfile() {
                     </div>
                 </div>
                 <div className='w-full flex justify-between'>
-                    <button className='px-3 py-1 rounded bg-[red]' type='button' onClick={() => setEditField(null)}>Cancel</button>
+                    <Link className='px-3 py-1 rounded bg-[red]' type='button' to={`/profile/${userData._id}`}>Cancel</Link>
                     <button className='px-3 py-1 rounded bg-[var(--purple-blue)]'>Confirm</button>
                 </div>
             </Form>

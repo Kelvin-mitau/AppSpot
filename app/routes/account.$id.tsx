@@ -5,6 +5,7 @@ import { LoaderFunctionArgs } from '@remix-run/node'
 import { Product, Transaction, User } from '../DB/models'
 import { useLoaderData, useNavigate, useParams } from '@remix-run/react'
 import Layout from './Layout'
+import ProductCard from '../components/ProductCard'
 
 interface accountData {
     _id: string,
@@ -18,10 +19,8 @@ interface product {
 export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
     try {
         const accountData = await User.findById(params.id).select(["-password"])
-        const products = await Product.find({ seller: params.id }).select(["title", "description", "price", "screenshots"])
+        const products = await Product.find({ seller: params.id }).select(["title", "description", "price", "screenshots", "price"])
         const purchases = await Transaction.find({ seller: params.id }).select([])
-
-        console.log(products)
 
         return json({ accountData, purchases, products })
     }
@@ -61,24 +60,8 @@ function Account() {
                             </div>
                             <div className='flex gap-1'>
                                 {products.map(product => (
-                                    <div key={product._id}>
-                                        <div className='Product-card h-full mx-2 flex flex-col justify-between p-1 text-white' >
-                                            <img src={product.screenshots && product.screenshots[0] ? product.screenshots[0] : "/random.png"} alt="" className='w-full aspect-[2/1.5] mr-1 rounded-lg' />
-                                            <div className='mx-1'>
-                                                <p className='text-lg my-2'>{product.title}</p>
-                                                <p className='text-[0.9rem] text-slate-200'>{product.description}</p>
-                                                {product.productURL && <button className='underline' onClick={(e) => handleProductReview(e, product.productURL)}>Preview</button>}
-                                                <div className='flex justify-end'>
-                                                    {product.pricingModel == "freemium" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>Free</p>}
-                                                    {product.pricingModel == "subscription" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>$ {product.price} per month</p>}
-                                                    {product.pricingModel == "oneTime" && <p className='bg-[var(--purple-blue)] w-fit py-0.5 px-2 rounded-lg'>$ {product.price} one time</p>}
-                                                </div>
-                                                <div className='flex justify-between'>
-                                                    <p className=' text-slate-100 my-1'>{purchases.length} {purchases.length == 1 ? "purchase" : "purchases"}</p>
-                                                    <p className='text-lg my-0.5 text-end'>${product.price}</p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div key={product._id} className='max-w-80'>
+                                        <ProductCard _id={product._id} description={product.description} price={product.price} pricingModel={product.pricingModel} productURL={product.productURL} screenshots={product.screenshots} title={product.title} />
                                     </div>
                                 ))}
                             </div>
