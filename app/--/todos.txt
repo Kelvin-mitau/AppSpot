@@ -2,3 +2,5 @@
 2.OTP
 3. Add all other product categories
 4.Create checkout page
+5.Fix bug on product page: TypeError: Cannot read properties of undefined (reading 'reduce')
+    at ProductPage (http://localhost:5173/app/routes/product.$id.tsx?import:120:69)

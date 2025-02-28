@@ -36,7 +36,8 @@ const userSchema = new mongoose.Schema({
     email:{type:String,required:true},
     createdAt:Date,
     businessDetails:{type:Object},
-    paymentsDetails:{type:Object}
+    paymentsDetails:{type:Object},
+    active:Boolean
 },{timestamps:{createdAt:"createdAt"}})
 
 const transactionSchema = new mongoose.Schema({

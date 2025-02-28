@@ -24,9 +24,7 @@ const SignUp = () => {
             return
         }
         else {
-            rememberMe && localStorage.setItem("userID", serverResponse._id)
-            !rememberMe && sessionStorage.setItem("userID", serverResponse._id)
-            navigate("/explore")
+            setResponseError("Click the we link sent to your email.")
         }
 
 
@@ -156,9 +154,13 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
             return json({ error: "This username is already taken" })
         }
 
-        const newUser = new User(reqBody)
+        const newUser = new User({ ...reqBody, active: false })
         await newUser.save()
         //console.log(newUser)
+        const dsalnkna = ["fksnv", "fkjsa", "rjkwb", "zfjwb", "nwvei", "jxbvs", "viosj", "ibnwe", "vbmqw", "vngvz", "vneir", "gneia", "cbquw", "cnwrn", "obewe", "gbrup", "vn9rw", "go94n", "iovbi", "ivnrv", "finea", "hoxns", "saonv", "iqnoi", "vwvin", "cvnwi", "vmlsa", "knwoe", "vnrir", "vndos", "osidv", "veris", "ainer", "vnovx", "avnve"]
+
+        console.log(`Auth link: ${dsalnkna[Math.floor(Math.random() * dsalnkna.length)]}${newUser._id}`)
+
         return json(newUser)
     } catch (err) {
         console.log(err)
