@@ -41,10 +41,10 @@ const userSchema = new mongoose.Schema({
 },{timestamps:{createdAt:"createdAt"}})
 
 const transactionSchema = new mongoose.Schema({
-    seller:{type:mongoose.Schema.ObjectId,required:true,ref:"user"},
     product:{type:mongoose.Schema.ObjectId,required:true,ref:"product"},
-    buyer:{type:Object,required:true}
-})
+    buyer:{type:Object,required:true},
+    createdAt:Date
+},{timestamps:{createdAt:"createdAt"}})
 
 const Product = mongoose.models.product || mongoose.model("product",productSchema)
 const User = mongoose.models.user || mongoose.model("user",userSchema)

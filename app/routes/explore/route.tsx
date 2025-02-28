@@ -70,7 +70,7 @@ const Explore = () => {
                     <div className='float-left min-h-[90vh] hidden sm:block p-2 bg-[#1a1c89] bg-opacity-20 rounded my-2'>
                         <p className='text-lg'>Categories</p>
                         <div className='flex flex-col gap-2'>
-                            {categories.map(({ title, link }, index) => <button key={index} onClick={() => handleSetSearchParams("category", link)}>
+                            {categories.slice(0, 10).map(({ title, link }, index) => <button key={index} onClick={() => handleSetSearchParams("category", link)}>
                                 <span className='bg-white block py-1 px-2 rounded bg-opacity-15'>{title}</span></button>)}
                         </div>
                     </div>

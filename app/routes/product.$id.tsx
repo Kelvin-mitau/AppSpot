@@ -18,11 +18,9 @@ function ProductPage() {
     const [screenshots, setScreenshots] = useState<string[]>([])
     const [selectedPhoto, setSelectedPhoto] = useState(0)
 
-    /* useEffect(() => {
-        setSelectedPhoto(screenshots)
-    },[screenshots]) */
 
     useEffect(() => {
+
         for (let i = 0; i < product.screenshots.length; i++) {
             const file = File.fromURL(product.screenshots[i]);
             file.loadAttributes((err, file) => {
@@ -33,11 +31,13 @@ function ProductPage() {
                 file.downloadBuffer({}).then((data: Buffer) => {
                     const decoder = new TextDecoder()
                     const decodedData = decoder.decode(data)
-                    if (screenshots.indexOf(decodedData) == -1) setScreenshots([...screenshots, decodedData])
+                    if ((screenshots.indexOf(decodedData) != -1)) setScreenshots((prev) => [...prev, decodedData])
                 })
             });
         }
+
     }, []);
+
 
     const navigate = useNavigate()
     return (
@@ -64,24 +64,23 @@ function ProductPage() {
                                 {product.description}
                             </p>
                             {product && (
-                                <div className="flex gap-3 my-4 items-center w-full">
-                                    <div>{handleItemRating(product.customerReviews.reduce((accumulator: number, item: { rating: number }) => {
-                                        return accumulator + item.rating;
-                                    }, 0), "")} </div>
-                                    <p className='text-lg'>({product.customerReviews.length})</p>
+                                <div className="flex gap-3 items-center my-2">
+                                    <div>{handleItemRating((product.customerTotalRating / product.productRatersCount), "")}</div> <span>({product.productRatersCount})</span>
                                 </div>
                             )}
                             {/* <div className='flex justify-end'>
                                 
                             </div> */}
-                            <p className="text-lg text-white">
-                                Features
-                            </p>
-                            <ol className='list-inside list-decimal'>
-                                {
-                                    product.features.map((feature: string, _index: number) => <li key={_index}>{feature}</li>)
-                                }
-                            </ol>
+                            {product.features.length > 0 && <div>
+                                <p className="text-lg text-white">
+                                    Features
+                                </p>
+                                <ol className='list-inside list-decimal'>
+                                    {
+                                        product.features.map((feature: string, _index: number) => <li key={_index}>{feature}</li>)
+                                    }
+                                </ol>
+                            </div>}
                             <div className='my-2'>
                                 {product.productURL && <p ><i className=''>Checkout the site: </i><a className='underline' href={product.productURL}>here.</a></p>}
 
@@ -104,10 +103,10 @@ function ProductPage() {
                         <div>
                             {relatedProducts.legth > 0 && <h3>You may also like</h3>}
                             <div className="flex gap-2 pb-2">
-                                {relatedProducts.map(({ _id, screenshots, title, description, productURL, pricingModel, price }: any) => {
+                                {relatedProducts.map(({ _id, screenshots, title, description, productURL, pricingModel, price, customerTotalRating, productRatersCount }: any) => {
                                     return (
                                         <div key={_id}>
-                                            <ProductCard _id={_id} description={description} price={price} pricingModel={pricingModel} productURL={productURL} screenshots={screenshots} title={title} />
+                                            <ProductCard _id={_id} description={description} price={price} pricingModel={pricingModel} productURL={productURL} screenshots={screenshots} title={title} customerTotalRating={customerTotalRating} productRatersCount={productRatersCount} />
                                         </div>
                                     )
                                 })}

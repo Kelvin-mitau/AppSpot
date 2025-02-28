@@ -7,6 +7,7 @@ import ClickToUpload from '../components/ClickToUpload';
 import imageToBase64 from '../functions/toBase64';
 import { Storage } from 'megajs'
 import DotsLoader from '../components/DotsLoader';
+import categories from '../functions/productCategories';
 
 
 
@@ -109,7 +110,7 @@ function RegisterProduct() {
                     <div className='bg-gray-700 text-gray-200 my-2 rounded py-1 w-fit'>
                         <select name="category" id="product-type-select-input " defaultValue={"eCom"} className='bg-gray-700 text-gray-200 '>
                             {
-                                productCategories.map((item, _index) => <option value={item.value} key={_index}>{item.title}</option>)
+                                categories.slice(1).map((item, _index) => <option value={item.link} key={_index}>{item.title}</option>)
                             }
                         </select>
                     </div>
