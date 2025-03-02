@@ -1,5 +1,5 @@
 import { ActionFunctionArgs,ActionFunction, json } from "@remix-run/node";
-import { Transaction } from "~/DB/models";
+import { Transaction } from "../../DB/models";
 
 export const action:ActionFunction = async({request}:ActionFunctionArgs) => {
     try {

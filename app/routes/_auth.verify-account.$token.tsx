@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import "../styles/Verify-account.css"
 import { json, useLoaderData, redirect, useNavigate } from '@remix-run/react'
 import { LoaderFunctionArgs, LoaderFunction } from '@remix-run/node'
-import { User } from '~/DB/models'
+import { User } from '../DB/models'
 
 function VerifyAccount() {
     const serverRes = useLoaderData<{ error: string | undefined | null, userID: string | null | undefined }>()

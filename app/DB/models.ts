@@ -18,10 +18,11 @@ const productSchema = new mongoose.Schema({
     description:{type:String, required:true},
     price:{type:Number},
     seller:{type: mongoose.Schema.ObjectId,ref:"user"},
-    purchasesCount:{type:Number, default:0}
-    //BAnkDetails
+    purchasesCount:{type:Number, default:0},
+    createdAt:{type:Date},
+    verified:{type:Boolean,default:false}
 
-})
+},{timestamps:{createdAt:"createdAt"}})
 
 const userSchema = new mongoose.Schema({
     firstName:{type:String,required:true},
@@ -42,7 +43,9 @@ const userSchema = new mongoose.Schema({
 
 const transactionSchema = new mongoose.Schema({
     product:{type:mongoose.Schema.ObjectId,required:true,ref:"product"},
-    buyer:{type:Object,required:true},
+    customeDetails:{type:Object,required:true},
+    orderID:String,
+    approved:{type:Boolean,default:false},
     createdAt:Date
 },{timestamps:{createdAt:"createdAt"}})
 
@@ -50,4 +53,4 @@ const Product = mongoose.models.product || mongoose.model("product",productSchem
 const User = mongoose.models.user || mongoose.model("user",userSchema)
 const Transaction = mongoose.models.transaction || mongoose.model("transaction",transactionSchema)
 
-export {Product,User,Transaction}
+export {Product,User,Transaction} 

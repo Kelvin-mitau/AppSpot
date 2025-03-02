@@ -1,50 +1,94 @@
 import React from 'react'
 import Layout from './Layout'
 import { ActionFunction, ActionFunctionArgs, json, redirect } from '@remix-run/node'
-import { Product, Transaction } from '~/DB/models'
-import { Form } from '@remix-run/react'
+import { Product, Transaction } from '../DB/models'
+import { Form, useParams } from '@remix-run/react'
+
+import {
+    PayPalButtons,
+    PayPalButtonsComponentProps,
+    PayPalScriptProvider,
+    ReactPayPalScriptOptions,
+} from "@paypal/react-paypal-js";
+
+interface OrderData {
+    id: string;
+    details?: Array<{
+        issue: string;
+        description: string;
+    }>;
+    debug_id?: string;
+}
+
+
+/* 
+ID: AajGhAoim_v_1lq9EvZcpcribRqHynGwDSouoGQF_UmhdGwSaWwaJk8iE_XFrqBhP4_ZaK8jDdzjBPkm
+Secret : EC_v4XiW7mUJdfVR-IWK8Wd28gpZmE2CfUMVZq4endHX-SYGa_XDay0NOlILmJgPckcUgkf5KD7Tkiy1
+*/
+
 
 function Checkout() {
+    const productID = useParams().id
+    const initialOptions: ReactPayPalScriptOptions = {
+        clientId: "AajGhAoim_v_1lq9EvZcpcribRqHynGwDSouoGQF_UmhdGwSaWwaJk8iE_XFrqBhP4_ZaK8jDdzjBPkm",
+    };
+
+    const createOrder: PayPalButtonsComponentProps["createOrder"] = async () => {
+        try {
+            const response = await fetch(`/pp-create-order/${productID}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    cart: [{ id: productID, quantity: "1" }],
+                }),
+            });
+
+            const orderData: OrderData = await response.json();
+
+            if (!orderData.id) {
+                const errorDetail = orderData.details ? orderData.details[0] : undefined;
+                const errorMessage = errorDetail
+                    ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
+                    : "Unexpected error occurred, please try again.";
+
+                throw new Error(errorMessage);
+            }
+
+            return orderData.id;
+
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    };
+
+    const onApprove = async (data: any) => {
+        //Use this to update transactions
+        // Capture the funds from the transaction.
+        const response = await fetch("/my-server/capture-paypal-order", {
+            method: "POST",
+            body: JSON.stringify({
+                productID: productID,
+                orderID: data.orderID
+            })
+        });
+
+        const details = await response.json();
+
+        // Show success message to buyer
+        alert(`Transaction completed by ${details.payer.name.given_name}`);
+    }
+
     return (
         <Layout>
-            <div className='grid place-content-center justify-center min-h-[70vh]'>
-                <Form method='POST' className='flex flex-col max-w-[600px] p-4 bg-white bg-opacity-5 rounded-lg' preventScrollReset>
-                    <h2 className='text-lg my-3'>Please Fill in this form</h2>
-                    <input
-                        required
-                        placeholder="First Name"
-                        className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
-                        type="text"
-                        name='firstName'
-                    />
-                    <input
-                        required
-                        placeholder="Last Name"
-                        className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
-                        type="text"
-                        name='lastName'
-                    />
-                    <input
-                        required
-                        placeholder="Email"
-                        className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
-                        type="email"
-                        name='email'
-                    />
-                    <input
-                        required
-                        placeholder="Phone Number"
-                        className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
-                        type="tel"
-                        name='phoneNumber'
-                    />
-                    <button
-                        className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150"
-                        type="submit"
-                    >
-                        Submit
-                    </button>
-                </Form>
+            <div className=' w-full min-h-[80vh] grid place-content-center items-center'>
+                <div className="App">
+                    <PayPalScriptProvider options={initialOptions}>
+                        <PayPalButtons createOrder={createOrder} onApprove={onApprove} />
+                    </PayPalScriptProvider>
+                </div>
             </div>
         </Layout>
     )
@@ -52,7 +96,7 @@ function Checkout() {
 
 export default Checkout
 
-export const action: ActionFunction = async ({ request, params }: ActionFunctionArgs) => {
+/* export const action: ActionFunction = async ({ request, params }: ActionFunctionArgs) => {
     try {
         const secretKey = ""
 
@@ -102,4 +146,4 @@ export const action: ActionFunction = async ({ request, params }: ActionFunction
         console.log("Unable to process checkout")
         return json({ error: 'Unable to process payment' })
     }
-}
+} */

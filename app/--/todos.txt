@@ -1,2 +1,2 @@
-
-5.Give images fixed dimensions using clamp
+1.Fix product images to appear
+2.Give product images fixed dimensions using clamp

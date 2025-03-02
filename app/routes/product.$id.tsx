@@ -1,6 +1,6 @@
 import React, { Suspense, useState, useEffect } from 'react'
 
-import { useLoaderData, useNavigate, Link, json, useParams } from '@remix-run/react';
+import { useLoaderData, useNavigate, Link, json, useParams, useFetcher } from '@remix-run/react';
 import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
 
 import handleItemRating from '../components/itemRating';
@@ -13,6 +13,8 @@ import { Product } from '../DB/models';
 import { File } from 'megajs';
 
 function ProductPage() {
+    const fetcher = useFetcher()
+
     const { product, relatedProducts }: any = useLoaderData()
 
     const [screenshots, setScreenshots] = useState<string[]>([])
@@ -40,6 +42,16 @@ function ProductPage() {
 
 
     const navigate = useNavigate()
+
+    const handlePurchase = () => {
+        if (product.pricingModel == "freemium") {
+            navigate(product.documentationURL)
+        }
+        else {
+            navigate(product.pricingModel != "freemium" ? `/checkout/${product._id}` : product.documentationURL)
+            //fetcher.submit({ productID: product._id }, { method: "POST", action: "/handleSubmit" })
+        }
+    }
     return (
         <Layout>
             <Suspense fallback={<div>Loading...</div>}>
@@ -88,7 +100,7 @@ function ProductPage() {
                             <div className="flex justify-end  mt-[10%]">
                                 <button
                                     className='bg-[var(--purple-blue)] w-fit py-1 text-lg px-4 rounded-lg'
-                                    onClick={() => navigate(product.pricingModel != "freemium" ? `/checkout/${product._id}` : product.documentationURL)}
+                                    onClick={handlePurchase}
                                 >
                                     {product.pricingModel != "freemium" ? <span>
                                         {product.pricingModel == "subscription" && `Subscribe $${product.price} per month`}
