@@ -5,14 +5,15 @@ export const action:ActionFunction = async({request}) => {
     try {
         const reqBody = await request.json()
 
-        const {documentationURL} = await Product.findById(reqBody.productID).select("documentationURL")
+        const product = await Product.findById(reqBody.product).select(["_id", "documentationURL"])
 
         //Generate an email to the user 
 
         const newTransaction = new Transaction(reqBody)
-        newTransaction.save()
+        await newTransaction.save() 
 
-        return json({downloadURL:documentationURL})
+        //console.log(documentationURL)
+        return json({})
     } catch (error) {
         console.log("Unable to approve payment",error)
         return json({error:"Oops...Something went wrong on pur side"})

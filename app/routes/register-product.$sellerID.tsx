@@ -9,8 +9,6 @@ import { Storage } from 'megajs'
 import DotsLoader from '../components/DotsLoader';
 import categories from '../functions/productCategories';
 
-
-
 function RegisterProduct() {
     const [loading, setLoading] = useState(false)
 

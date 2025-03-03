@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from 'react'
+import React, { useRef, Suspense, useState, useEffect } from 'react'
 
 import { useLoaderData, useNavigate, Link, json, useParams, useFetcher } from '@remix-run/react';
 import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
@@ -11,35 +11,52 @@ import Layout from './Layout';
 import { Product } from '../DB/models';
 
 import { File } from 'megajs';
+import DotsLoader from '../components/DotsLoader';
 
 function ProductPage() {
-    const fetcher = useFetcher()
-
     const { product, relatedProducts }: any = useLoaderData()
-
     const [screenshots, setScreenshots] = useState<string[]>([])
-    const [selectedPhoto, setSelectedPhoto] = useState(0)
 
+    const fetchImages = async () => {
+        let images: string[] = [];
+        let promises = [];
 
-    useEffect(() => {
-
-        for (let i = 0; i < product.screenshots.length; i++) {
+        for (let i: number = 0; i < product.screenshots.length; i++) {
             const file = File.fromURL(product.screenshots[i]);
-            file.loadAttributes((err, file) => {
-                if (err) {
-                    console.error('Error loading file attributes:', err);
-                    return;
-                }
-                file.downloadBuffer({}).then((data: Buffer) => {
-                    const decoder = new TextDecoder()
-                    const decodedData = decoder.decode(data)
-                    if ((screenshots.indexOf(decodedData) != -1)) setScreenshots((prev) => [...prev, decodedData])
-                })
+            const promise = new Promise((resolve, reject) => {
+                file.loadAttributes((err, file) => {
+                    if (err) {
+                        console.error('Error loading file attributes:', err);
+                        reject(err);
+                        return;
+                    }
+                    file.downloadBuffer({})
+                        .then((data: Buffer) => {
+                            const decoder = new TextDecoder();
+                            const decodedData = decoder.decode(data);
+                            images.push(decodedData);
+                            resolve(decodedData);
+                        })
+                        .catch((error) => {
+                            console.error('Error downloading buffer:', error);
+                            reject(error);
+                        });
+                });
             });
+            promises.push(promise);
         }
 
-    }, []);
+        try {
+            await Promise.all(promises);
+            setScreenshots(images)
+        } catch (error) {
+            console.error('Error processing images:', error);
+        }
+    };
 
+    useEffect(() => {
+        fetchImages()
+    }, []);
 
     const navigate = useNavigate()
 
@@ -49,26 +66,46 @@ function ProductPage() {
         }
         else {
             navigate(product.pricingModel != "freemium" ? `/checkout/${product._id}` : product.documentationURL)
-            //fetcher.submit({ productID: product._id }, { method: "POST", action: "/handleSubmit" })
         }
     }
+
+    const testImgs = ["/random.png", "/random.png", "/random.png", "/random.png", "/random.png",]
+    const scrollRef: any = useRef(null);
+
+    const scrollToRight = () => {
+        if (scrollRef.current) {
+            const width = scrollRef.current.offsetWidth
+            scrollRef.current.scrollLeft += width;
+        }
+    };
+
+    const scrollToLeft = () => {
+        if (scrollRef.current) {
+            const width = scrollRef.current.offsetWidth
+            scrollRef.current.scrollLeft -= width;
+        }
+    };
     return (
         <Layout>
             <Suspense fallback={<div>Loading...</div>}>
-                {product ? (<div className='px-1 sm:px-2'>
+                {product ? (<div className='Product-page px-1 sm:px-2'>
                     <div className="flex flex-col sm:grid grid-cols-2 gap-[2rem] place-items-start ml-1 my-4">
-                        <div className=' mx-auto h-full'>
-                            <div className=" flex   h-[100%] ">
-                                <div className='w-full h-full'>
-                                    <img src={screenshots[selectedPhoto]} alt="" className='h-full max-h-[32rem] rounded' />
+                        <div className=' mx-auto h-full w-full'>
+                            {screenshots.length > 0 ? <div className=" relative h-[100%] " >
+                                <div className='Screenshots-wrapper  flex flex-row  overflow-x-scroll gap-[2px]' ref={scrollRef}>
+                                    {
+                                        screenshots.map((i, index) => <img src={i} key={index} className='aspect-[2/1.5] h-full' />)
+                                    }
                                 </div>
-                                <div className='flex flex-col gap-[2px]'>
-                                    {screenshots
-                                        .filter((_: any, _index: number) => _index != selectedPhoto)
-                                        .map((_: string, index: number) => <button onClick={() => setSelectedPhoto(index)} className='cursor-pointer'>
-                                            <img src={screenshots[index]} key={index} className={`h-10 border border-slate-400 rounded aspect-[2/1.5]`} /></button>)}
-                                </div>
-                            </div>
+                                <button className='absolute top-1/2 -translate-y-1/2 left-0 -translate-x-1/2 mx-3 py-1 bg-slate-300 rounded-lg px-2 my-1' onClick={scrollToLeft}>
+                                    <svg className='h-6 fill-indigo-600' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z" /></svg>
+                                </button>
+                                <button className='absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 mx-3 py-1 bg-slate-300 rounded-lg px-2 my-1' onClick={scrollToRight}>
+                                    <svg className='h-6 fill-indigo-600' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z" /></svg>
+                                </button>
+                            </div> : <div className='flex items-center justify-center bg-slate-300 w-full h-full rounded'>
+                                <DotsLoader />
+                            </div>}
                         </div>
                         <div id="product_details-div" className='w-full px-1'>
                             <p id="product-name" className='text-white text-xl my-2'>{product.title}</p>
@@ -80,9 +117,6 @@ function ProductPage() {
                                     <div>{handleItemRating((product.customerTotalRating / product.productRatersCount), "")}</div> <span>({product.productRatersCount})</span>
                                 </div>
                             )}
-                            {/* <div className='flex justify-end'>
-                                
-                            </div> */}
                             {product.features.length > 0 && <div>
                                 <p className="text-lg text-white">
                                     Features

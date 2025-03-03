@@ -12,7 +12,6 @@ export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => 
     return json(user)
 }
 
-
 function Profile() {
 
     interface userData {

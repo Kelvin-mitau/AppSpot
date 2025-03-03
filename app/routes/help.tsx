@@ -1,10 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReportAProblem from '../components/ReportProblem'
 import "../styles/help.css"
 import Layout from './Layout'
-
+import { ActionFunction, json } from '@remix-run/node'
+import { useActionData } from '@remix-run/react'
+import { Issue } from '~/DB/models'
 
 function Help() {
+    const actionData = useActionData<{ error: undefined | string, msg: undefined | string }>()
+    const error = actionData?.error
+    const msg = actionData?.msg
+
+    //console.log(actionData)
     return (
         <Layout>
             <div className='text-white'>
@@ -191,7 +198,7 @@ function Help() {
                     Report An Issue
                 </h2>
                 <div className=" w-[97%] sm:w-[90%] mx-auto  mt-3 mb-4">
-                    <ReportAProblem />
+                    <ReportAProblem error={error} msg={msg} />
                 </div>
                 <h2 className="w-[full] text-center text-2xl font-semibold mb-2">
                     Contact US
@@ -249,3 +256,14 @@ function Help() {
 }
 
 export default Help
+
+export const action: ActionFunction = async ({ request }) => {
+    try {
+        const issue = (await request.formData()).get("issue")
+        const newIssue = await new Issue({ issue })
+        await newIssue.save()
+        return json({ msg: "We have received your request. We will worl on it as soon as possible" })
+    } catch (error) {
+        return json({ error: "Oops...Something went wrong on our side. Try again later" })
+    }
+}

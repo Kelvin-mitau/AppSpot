@@ -1,4 +1,3 @@
-import React from 'react'
 import "../styles/Dots-loader.css"
 
 function DotsLoader() {

@@ -10,26 +10,22 @@ import { User } from '../../DB/models'
 
 function CompleteAccount() {
     const [currentForm, setCurrentForm] = useState(1)
-
     const [paymentOption, setPaymentOption] = useState<"card" | "paypal">("card")
 
     const [profilePicture, setProfilePicture] = useState<string>("")
     const [tags, setTags] = useState<string[]>([])
-
     const [tagInputValue, setCurrentInputValue] = useState<string>("")
 
     const actionData = useActionData<{ error: string }>()
 
-    const popularTags = `#crmexpert#marketingautomation#projectmanagement#hrsoftware#accountingsoftware#ecommerceplatform#customerengagement#analyticsguru#collaborationtools#cybersecurity#fintechsolutions#healthtech#edtech#iotplatform#aiandml#ecommerce#landing-page#SAAS`
+    const popularTags = `#Crm-expert#Marketing-automation#Project-management#HRSoftware#Accounting-software#Ecommerce#Customer-engagement#Analytics-guru#Collaboration-tools#Cybersecurity#Fintech-solutions#Health-tech#edtech#IOT-platform#AI-and-ML#Shopify#Landing-page#SAAS`
     const popularTagsArr = popularTags.split("#")
 
     const handleImageUpload = async (files: any) => {
-        // console.log(await imageToBase64(file))
         const base64Val = await imageToBase64(files[0])
         setProfilePicture(base64Val);
     }
     const handleSubmit = (event: any) => {
-        //event.preventDefault()
         const form = event.target
         const profilePictureInput = document.createElement("input")
         profilePictureInput.style.display = "none"
@@ -62,7 +58,7 @@ function CompleteAccount() {
                         <AboutBusiness setCurrentForm={setCurrentForm} />
                     </div>
                     <div className={currentForm != 3 ? "hidden" : ""}>
-                        <h2 className='text-white text-center text-2xl my-2'>Payment Collection Information</h2>
+                        <h2 className='text-white text-center text-2xl my-2'>Paypal Payment Collection Information</h2>
                         <PaymentCollection paymentOption={paymentOption} setCurrentForm={setCurrentForm} setPaymentOption={setPaymentOption}
                             errorMSG={actionData?.error} />
                     </div>
@@ -71,7 +67,6 @@ function CompleteAccount() {
         </Layout>
     )
 }
-
 export default CompleteAccount
 
 export const action: ActionFunction = async ({ request, params }: ActionFunctionArgs) => {
@@ -93,12 +88,9 @@ export const action: ActionFunction = async ({ request, params }: ActionFunction
                 tags: req.tags,
                 bio: req.bio,
                 profilePicture: req.profilePicture,
-
             }
         })
-
         return redirect(`/account/${userID}`)
-
     }
     catch (err) {
         console.log(err)

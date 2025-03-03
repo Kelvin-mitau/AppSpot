@@ -1,8 +1,6 @@
-import React from 'react'
+import { useState } from 'react'
 import Layout from './Layout'
-import { ActionFunction, ActionFunctionArgs, json, redirect } from '@remix-run/node'
-import { Product, Transaction } from '../DB/models'
-import { Form, useParams } from '@remix-run/react'
+import { useNavigate, useParams } from '@remix-run/react'
 
 import {
     PayPalButtons,
@@ -21,17 +19,25 @@ interface OrderData {
 }
 
 
-/* 
-ID: AajGhAoim_v_1lq9EvZcpcribRqHynGwDSouoGQF_UmhdGwSaWwaJk8iE_XFrqBhP4_ZaK8jDdzjBPkm
-Secret : EC_v4XiW7mUJdfVR-IWK8Wd28gpZmE2CfUMVZq4endHX-SYGa_XDay0NOlILmJgPckcUgkf5KD7Tkiy1
-*/
-
-
 function Checkout() {
+    const navigate = useNavigate()
     const productID = useParams().id
     const initialOptions: ReactPayPalScriptOptions = {
         clientId: "AajGhAoim_v_1lq9EvZcpcribRqHynGwDSouoGQF_UmhdGwSaWwaJk8iE_XFrqBhP4_ZaK8jDdzjBPkm",
     };
+
+    interface userDetails {
+        firstName: string,
+        lastName: string,
+        phoneNumber: string,
+        email: string
+    }
+    const [userDetails, setUserDetails] = useState<userDetails>({
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        email: ""
+    })
 
     const createOrder: PayPalButtonsComponentProps["createOrder"] = async () => {
         try {
@@ -65,28 +71,69 @@ function Checkout() {
     };
 
     const onApprove = async (data: any) => {
-        //Use this to update transactions
-        // Capture the funds from the transaction.
-        const response = await fetch("/my-server/capture-paypal-order", {
+        const response = await fetch("/pp-capture", {
             method: "POST",
             body: JSON.stringify({
-                productID: productID,
+                customerDetails: userDetails,
+                product: productID,
                 orderID: data.orderID
             })
         });
 
-        const details = await response.json();
-
-        // Show success message to buyer
-        alert(`Transaction completed by ${details.payer.name.given_name}`);
+        const res = await response.json();
+        if (!res.error) {
+            navigate(`/download/${res.productID}`)
+        }
     }
-
+    const handleUserDetailsChange = ({ target }: any) => {
+        setUserDetails({ ...userDetails, [target.name]: target.value })
+    }
     return (
         <Layout>
             <div className=' w-full min-h-[80vh] grid place-content-center items-center'>
+                <div className='flex flex-col gap-2 my-4'>
+                    <div className='grid grid-cols-none sm:grid-cols-2 gap-1'>
+                        <input
+                            required
+                            onChange={handleUserDetailsChange}
+
+                            placeholder="First Name *"
+                            className="bg-gray-700 text-gray-200 border-0 rounded-md p-2  focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150 w-full"
+                            type="text"
+                            name='firstName'
+                        />
+                        <input
+                            required
+                            onChange={handleUserDetailsChange}
+
+                            placeholder="Last Name *"
+                            className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 w-full focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+                            type="text"
+                            name='lastName'
+                        />
+                    </div>
+                    <input
+                        required
+                        onChange={handleUserDetailsChange}
+
+                        placeholder="Phone Number *"
+                        className="bg-gray-700 text-gray-200 border-0 rounded-md p-2  focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+                        type="tel"
+                        name='phoneNumber'
+                    />
+                    <input
+                        required
+                        onChange={handleUserDetailsChange}
+                        placeholder="Email *"
+                        className="bg-gray-700 text-gray-200 border-0 rounded-md p-2  focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+                        type="email"
+                        name='email'
+                    />
+                </div>
                 <div className="App">
                     <PayPalScriptProvider options={initialOptions}>
-                        <PayPalButtons createOrder={createOrder} onApprove={onApprove} />
+                        <PayPalButtons createOrder={createOrder} onApprove={onApprove}
+                            disabled={userDetails.firstName == "" || userDetails.lastName == "" || userDetails.email == "" || userDetails.phoneNumber == ""} />
                     </PayPalScriptProvider>
                 </div>
             </div>
@@ -96,54 +143,3 @@ function Checkout() {
 
 export default Checkout
 
-/* export const action: ActionFunction = async ({ request, params }: ActionFunctionArgs) => {
-    try {
-        const secretKey = ""
-
-        const itemDetails = await Product.findById(params.id).select(["price"])
-        const itemPrice = await itemDetails.price
-        const formData = await request.formData()
-        const userEmail = formData.get("email")
-        const userPhoneNumber = formData.get("phoneNumber")
-        const userFirstName = formData.get("firstName")
-        const userLastName = formData.get("lastName")
-
-        const response = await fetch('https://api.paystack.co/transaction/initialize', {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${secretKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email: userEmail, amount: itemPrice })
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const res = await response.json();
-
-        if (res.status != true) {
-            throw new Error('Unable to initialize transaction')
-        }
-
-        const newTransaction = new Transaction({
-            product: params.id,
-            buyer: {
-                firstName: userFirstName,
-                lastName: userLastName,
-                phoneNumber: userPhoneNumber,
-                email: userEmail
-            },
-            "access_code": res.data["access_code"],
-            reference: res.data.reference,
-            completed: false
-        })
-        newTransaction.save()
-
-        return redirect(res.data["authorization_url"])
-    } catch (err) {
-        console.log("Unable to process checkout")
-        return json({ error: 'Unable to process payment' })
-    }
-} */

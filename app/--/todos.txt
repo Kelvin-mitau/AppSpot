@@ -1,2 +1,6 @@
-1.Fix product images to appear
-2.Give product images fixed dimensions using clamp
+1.Fix form validation -- Complete account, business phone number ie. country-code and phone number
+2.Set actual  phone number and country code in _admin.transactions
+3.Sending emails to users : sign up verification and paypay capture(download URL)
+4.Create order file : set return and cancel URL and reference_id
+5.Add forgot password
+6.Add titles and description to pages 

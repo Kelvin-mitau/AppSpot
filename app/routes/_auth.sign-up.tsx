@@ -5,17 +5,10 @@ import { ActionFunction, ActionFunctionArgs } from '@remix-run/node'
 import { User } from '../DB/models'
 import bcrypt from "bcrypt"
 
-
-
 const SignUp = () => {
     const [profilePicture, setProfilePicture] = useState<string>("");
     const [serverResponseError, setResponseError] = useState<undefined | string>("");
-    const [rememberMe, setRememberMe] = useState(false)
-    const navigate = useNavigate()
 
-    const handeleSetRememberMe = ({ target }: any) => {
-        setRememberMe(target.checked)
-    }
     const serverResponse: any = useActionData()
     useEffect(() => {
         if (!serverResponse) return
@@ -26,12 +19,9 @@ const SignUp = () => {
         else {
             setResponseError("Click the we link sent to your email.")
         }
-
-
     }, [serverResponse])
 
     const handleSubmit = (event: any) => {
-        //event.preventDefault()
         const form = event.target
         const profilePictureInput = document.createElement("input")
         profilePictureInput.style.display = "none"
@@ -110,10 +100,7 @@ const SignUp = () => {
                         type="password"
                         name="confirmPassword"
                     />
-                    <div className='flex gap-2'>
-                        <input type="checkbox" name="rememberMe" id="" className='cursor-pointer' onChange={handeleSetRememberMe} />
-                        <p>Remember me</p>
-                    </div>
+
                     <p className="text-white mt-4">
                         Already have an account?
                         <a className="mx-2 text-blue-500 -200 hover:underline mt-4" href="/sign-in"
@@ -135,7 +122,6 @@ export default SignUp
 
 export const action: ActionFunction = async ({ request }: ActionFunctionArgs) => {
     try {
-        //const newUser = new User()
         let reqBody: any = {};
         (await request.formData()).forEach((value: any, key: any) => {
             if (key) reqBody[key] = value;

@@ -103,3 +103,17 @@ body{
     box-shadow: 5px 5px 7px #0a0016,
       -5px -5px 7px #260056;
 }
+
+.Product-page .Screenshots-wrapper{
+  aspect-ratio: 2/1.5;
+  width: clamp(300px,100%,500px);
+  margin:auto;
+  border-radius: 0.5rem;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  img{
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+  }
+}

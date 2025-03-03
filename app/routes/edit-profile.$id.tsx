@@ -7,14 +7,8 @@ import { User } from '../DB/models'
 
 
 export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
-    /*  const splittedPath = new URL(request.url).pathname.split("/") */
     const userID = params.id
     console.log(userID)
-
-
-    /* Set user ID to user ID on the path */
-
-
     const user = await User.findById(userID)
     return json(user)
 }
@@ -36,8 +30,6 @@ export const action: ActionFunction = async ({ params, request }: ActionFunction
 
 function EditProfile() {
     const [editField, setEditField] = useState<null | string>(null)
-
-
     interface userData {
         _id: string,
         username: string,
@@ -52,15 +44,12 @@ function EditProfile() {
         tags: string[]
     }
     const userData: userData = useLoaderData()
-
-
     const [fieldsData, setFieldData] = useState({
         firstName: userData.firstName,
         lastName: userData.lastName,
         middleName: userData.middleName,
         bio: userData.bio
     })
-
     const [profilePicture, setProfilePicture] = useState<string>(userData.profilePicture ? userData.profilePicture : "/random.png")
     const [profilePictureIsChanged, setProfilePictureIsChanged] = useState(false)
 

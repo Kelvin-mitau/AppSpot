@@ -30,7 +30,7 @@ function About() {
                 <h2 className='text-xl'>Contact Us</h2>
                 <p>We love hearing from our users! If you have any questions, feedback, or inquiries, please don't hesitate to reach out to us using the contact options provided below.
                     You can also follow us on social media at these account to stay updated on the latest news and updates.</p>
-                <div className='w-full my-4'>
+                <div className='w-full my-4 scale-90 sm:scale-100'>
                     <Contacts />
                 </div>
             </div>

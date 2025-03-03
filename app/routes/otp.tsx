@@ -18,7 +18,6 @@ function OTPForm() {
             clearInterval(intervalId);
         }
 
-        //  return () => clearInterval(intervalId);
     }, [])
     useEffect(() => {
         console.log("flnsfkosn")

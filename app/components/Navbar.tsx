@@ -1,14 +1,5 @@
-
-import { LoaderFunction, json } from '@remix-run/node'
 import { Link, useNavigate } from '@remix-run/react'
-import React, { useEffect, useState } from 'react'
-
-
-/* export const loader: LoaderFunction = () => {
-
-    return json("fbsl")
-} */
-
+import { useEffect, useState } from 'react'
 
 function Navbar() {
     const [userID, setUserID] = useState<null | undefined | string>(null)
@@ -18,7 +9,6 @@ function Navbar() {
             setUserID(localStorage.getItem("userID") || sessionStorage.getItem("userID"))
         }
     }, [])
-
 
     return (
         <div className="Navbar w-full">

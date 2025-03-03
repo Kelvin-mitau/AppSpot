@@ -9,7 +9,6 @@ import ProductCard from '../components/ProductCard'
 
 interface accountData {
     _id: string,
-
     businessDetails: null | undefined | { businessName: string }
 }
 interface product {
@@ -30,17 +29,14 @@ export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => 
     }
 }
 
-function Account() {
+const Account = () => {
     const params = useParams()
     const userID = params.id
     const { accountData, purchases, products, error } = useLoaderData<{
         accountData: accountData, purchases: {}[], error: string,
         products: product[]
     }>()
-
-
     const navigate = useNavigate()
-
     return (
         <Layout>
             {

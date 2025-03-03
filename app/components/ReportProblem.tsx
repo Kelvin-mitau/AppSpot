@@ -1,30 +1,16 @@
-import React, { ChangeEvent, useState } from 'react'
+import { useFetcher } from '@remix-run/react'
 
-const ReportAProblem = () => {
-  const [data, setData] = useState({
+interface props {
+  error: undefined | string,
+  msg: undefined | string
+}
+const ReportAProblem: React.FC<props> = ({ msg, error }) => {
+  const fetcher = useFetcher()
 
-    problem: ""
-  })
-  const [responseData, setResponseData] = useState()
-
-  const handleProblemChange = ({ target }: ChangeEvent<HTMLTextAreaElement>) => {
-    setData({ ...data, problem: target.value })
-  }
-
-
-  const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const userID = localStorage.getItem("userID")
-    fetch(`/api/report-issue/${userID}`, { method: "POST", body: JSON.stringify(data) })
-      .then(res => res.json())
-      .then(data => setResponseData(data))
-      .catch(err => console.log(err))
-  }
   return (
-    <form onSubmit={handleSubmit}>
+    <fetcher.Form method='POST' preventScrollReset >
       <textarea
-        name="problem"
-        onChange={handleProblemChange}
+        name="issue"
         id=""
         rows={4}
         className="w-full resize-none rounded p-2 bg-blue-100 text-black"
@@ -49,8 +35,10 @@ const ReportAProblem = () => {
           </svg>
         </button>
       </div>
-      <p className='text-center mb-2 text-red-400'>{responseData}</p>
-    </form>
+      <p className='text-center mb-2 text-red-400'>gbtrbtg</p>
+      {error && <p className='text-center mb-2 text-red-400'>{error}</p>}
+      {msg && <p className='text-center mb-2 text-blue-400'>{msg}</p>}
+    </fetcher.Form>
   )
 }
 

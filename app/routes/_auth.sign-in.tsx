@@ -29,7 +29,6 @@ export default function SignIn() {
             navigate("/explore")
         }
 
-
     }, [serverResponse])
     return (
         <div className="flex flex-col items-center justify-center h-screen dark">
@@ -77,7 +76,6 @@ export default function SignIn() {
 
 export const action: ActionFunction = async ({ request }: ActionFunctionArgs) => {
     try {
-        //const newUser = new User()
         let reqBody: any = {};
         (await request.formData()).forEach((value: any, key: any) => {
             if (key) reqBody[key] = value;
@@ -91,7 +89,6 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
         });
 
         !user && json({ error: "Email or password is incorrect" })
-        // const checkPassword =   
         if (!user || !(await bcrypt.compare(reqBody.password, user.password))) {
             return json({ error: "Username/Email or password is incorrect" });
         }

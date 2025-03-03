@@ -43,14 +43,19 @@ const userSchema = new mongoose.Schema({
 
 const transactionSchema = new mongoose.Schema({
     product:{type:mongoose.Schema.ObjectId,required:true,ref:"product"},
-    customeDetails:{type:Object,required:true},
+    customerDetails:{type:Object},
     orderID:String,
     approved:{type:Boolean,default:false},
     createdAt:Date
 },{timestamps:{createdAt:"createdAt"}})
 
+const issueSchema = new mongoose.Schema(
+    {issue:String,createdAt:Date},{timestamps:{createdAt:"createdAt"}}
+)
+
 const Product = mongoose.models.product || mongoose.model("product",productSchema)
 const User = mongoose.models.user || mongoose.model("user",userSchema)
 const Transaction = mongoose.models.transaction || mongoose.model("transaction",transactionSchema)
+const Issue = mongoose.models.issue || mongoose.model("issue",issueSchema)
 
-export {Product,User,Transaction} 
+export {Product,User,Transaction,Issue} 

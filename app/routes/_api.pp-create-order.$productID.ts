@@ -4,13 +4,9 @@ import getPPAuth from "../functions/getPPAuth";
 
 export const action:ActionFunction = async ({params}:ActionFunctionArgs) => {
     try {
-        
         const productID = params.productID
         const {price} = await Product.findById(productID).select("price")  
-        //console.log(params)
-
          const order = await createOrder(price);
-         console.log(order)
          return json(order)
     } catch (error) {
         console.log("Unable to create order",error)
@@ -18,10 +14,8 @@ export const action:ActionFunction = async ({params}:ActionFunctionArgs) => {
     }
 }
 
-
 async function createOrder(price:number) {
     const accessToken = await getPPAuth()
-
    const ppRequest =  fetch ("https://api-m.sandbox.paypal.com/v2/checkout/orders", {
     method: "POST",
     headers: {
@@ -46,7 +40,7 @@ async function createOrder(price:number) {
             "payment_method_selected": "PAYPAL",
             "brand_name": "AppSPot",
             "locale": "en-US",
-            "landing_page": "LOGIN",
+            "landing_page": "NO_PREFERENCE",
             "shipping_preference": "NO_SHIPPING",
             "user_action": "PAY_NOW",
             "return_url": "https://example.com/returnUrl",

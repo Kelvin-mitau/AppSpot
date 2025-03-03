@@ -1,4 +1,3 @@
-
 const getProductsFilter = (url:string) => {
     const params = new URL(url).searchParams
     let paramsObj: { [key: string]: string } = {};

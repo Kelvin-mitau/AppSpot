@@ -21,7 +21,6 @@ const ProductCard: React.FC<ProductDetails> = ({ _id, screenshots, title, produc
 
     const handleProductReview = (event: React.MouseEvent<HTMLAnchorElement>, url: string) => {
         event.stopPropagation();
-        navigate(url, {})
     }
 
     const [screenShotSrc, setScreenshotSrc] = useState<string>('')
@@ -41,13 +40,13 @@ const ProductCard: React.FC<ProductDetails> = ({ _id, screenshots, title, produc
     }, []);
     return (
 
-        <Link to={`/product/${_id}`} key={_id}>
+        <div onClick={() => navigate(`/product/${_id}`)} key={_id} className="text-start cursor-pointer">
             <div className='Product-card h-full mx-2 flex flex-col justify-between p-1 text-white' >
                 <img src={screenShotSrc ? screenShotSrc : "/random.png"} alt="" className='w-full aspect-[2/1.5] mr-1 rounded-lg' />
                 <div className='mx-1'>
                     <p className='text-lg my-2'>{title}</p>
                     <p className='text-[0.9rem] text-slate-200'>{description}</p>
-                    {productURL && <Link to={productURL} className='underline' onClick={(e) => handleProductReview(e, productURL)}>Preview Link</Link>}
+                    {productURL && <Link to={productURL} onClick={(e) => handleProductReview(e, productURL)} target="_blank" className='underline' >Preview link</Link>}
                     <div className="flex gap-3 items-center my-2">
                         <div>{handleItemRating((customerTotalRating / productRatersCount), "")}</div> <span>({productRatersCount})</span>
                     </div>
@@ -61,7 +60,7 @@ const ProductCard: React.FC<ProductDetails> = ({ _id, screenshots, title, produc
                     </div>
                 </div>
             </div>
-        </Link>
+        </div>
     )
 }
 

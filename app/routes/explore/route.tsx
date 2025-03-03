@@ -1,5 +1,4 @@
 import React, { Suspense, useState, useEffect } from 'react'
-
 import { json, MetaFunction, useLoaderData, useNavigate, useSearchParams } from '@remix-run/react'
 import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node'
 
@@ -19,9 +18,6 @@ export const meta: MetaFunction = () => {
         }]
     )
 }
-
-
-
 export const loader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
     try {
         const { filter, sort } = getProductsFilter(request.url)
@@ -67,7 +63,7 @@ const Explore = () => {
         <Layout>
             <Suspense fallback={<div>Loading...</div>}>
                 <div className='flex flex-row'>
-                    <div className='float-left min-h-[90vh] hidden sm:block p-2 bg-[#1a1c89] bg-opacity-20 rounded my-2'>
+                    <div className='float-left min-h-[90vh] hidden md:block p-2 bg-[#1a1c89] bg-opacity-20 rounded my-2'>
                         <p className='text-lg'>Categories</p>
                         <div className='flex flex-col gap-2'>
                             {categories.slice(0, 10).map(({ title, link }, index) => <button key={index} onClick={() => handleSetSearchParams("category", link)}>
@@ -114,7 +110,7 @@ const Explore = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='grid grid-cols-2 sm:grid-cols-3  gap-1 mx-2'>
+                        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5  gap-1 mx-2'>
                             {
                                 products.map(({ _id, title, description, productURL, pricingModel, price, screenshots, productRatersCount, customerTotalRating }) => {
                                     return (

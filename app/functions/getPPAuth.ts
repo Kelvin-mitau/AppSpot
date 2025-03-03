@@ -1,5 +1,3 @@
-import config from "dotenv"
-
 export default async function(){
     const endpoint = "https://api-m.sandbox.paypal.com/v1/oauth2/token";
         const clientId = process.env.PPZ_CLIENT_ID;
