@@ -20,7 +20,8 @@ const productSchema = new mongoose.Schema({
     seller:{type: mongoose.Schema.ObjectId,ref:"user"},
     purchasesCount:{type:Number, default:0},
     createdAt:{type:Date},
-    verified:{type:Boolean,default:false}
+    verified:{type:Boolean,default:false},
+    productDownloadURL:String
 
 },{timestamps:{createdAt:"createdAt"}})
 

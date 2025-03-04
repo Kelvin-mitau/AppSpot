@@ -2,6 +2,8 @@ import { ActionFunction, ActionFunctionArgs, json } from "@remix-run/node";
 import { Product } from "../DB/models";
 import getPPAuth from "../functions/getPPAuth";
 
+const ppBaseURL = process.env.ENVIRONMENT == "development" ? "https://api-m.sandbox.paypal.com" : "https://api-m.paypal.com"
+
 export const action:ActionFunction = async ({params}:ActionFunctionArgs) => {
     try {
         const productID = params.productID
@@ -16,7 +18,7 @@ export const action:ActionFunction = async ({params}:ActionFunctionArgs) => {
 
 async function createOrder(price:number) {
     const accessToken = await getPPAuth()
-   const ppRequest =  fetch ("https://api-m.sandbox.paypal.com/v2/checkout/orders", {
+   const ppRequest =  fetch (`${ppBaseURL}/v2/checkout/orders`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,8 +45,8 @@ async function createOrder(price:number) {
             "landing_page": "NO_PREFERENCE",
             "shipping_preference": "NO_SHIPPING",
             "user_action": "PAY_NOW",
-            "return_url": "https://example.com/returnUrl",
-            "cancel_url": "https://example.com/cancelUrl"
+            "return_url": "",
+            "cancel_url": ""
           }
         }
       }

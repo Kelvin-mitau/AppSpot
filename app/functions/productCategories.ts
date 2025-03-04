@@ -32,7 +32,7 @@ const categories = [
         link: "projectManagement"
     },
     {
-        title: "Content Management Systems (CMS)",
+        title: "Content Management Systems",
         link: "cms"
     },
     {

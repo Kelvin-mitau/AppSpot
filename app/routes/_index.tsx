@@ -31,7 +31,7 @@ export default function Index() {
               role="button"
               className="border border-white group relative inline-flex items-center justify-center text-base rounded-xl bg-gray-900 px-8 py-3 font-semibold text-white transition-all duration-200 hover:bg-gray-800 hover:shadow-lg hover:-translate-y-0.5 hover:shadow-gray-600/30"
               href="/explore"
-            >Get Started with AppSpot<svg
+            >Start exporing with AppSpot<svg
               aria-hidden="true"
               viewBox="0 0 10 10"
               height="10"
@@ -50,6 +50,23 @@ export default function Index() {
               </svg>
             </a>
           </div>
+          {/* <div className="block">
+            <Link to={"/guide"} className="bg-indigo-500 rounded-lg px-4 py-1 font-semibold tracking-wide text-lg flex items-center mx-auto gap-1 w-fit">
+              <span>How it works </span>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 10 10"
+                height="10"
+                width="10"
+                fill="none"
+                className="mt-0.5 ml-2 -mr-1 stroke-white stroke-2"
+              >
+                <path
+                  d="M1 1l4 4-4 4"
+                  className="transition hover:translate-x-[3px]"
+                ></path>
+              </svg></Link>
+          </div> */}
         </div>
       </div>
     </Layout>

@@ -16,13 +16,23 @@ const AboutBusiness: React.FC<{ setCurrentForm: (form: number) => void }> = ({ s
                 type="text"
                 name='businessWebsiteURL'
             />
-            <input
-                required
-                placeholder="Business Phone Number *"
-                className="w-full bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
-                type="tel"
-                name='businessPhoneNumber'
-            />
+            <div className='grid grid-cols-[15%_auto] gap-0.5'>
+                <input
+                    required
+                    placeholder="Code"
+                    className="w-full bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+                    type="tel"
+                    name='businessPhoneNumberCountryCode'
+                    defaultValue={"+91"}
+                />
+                <input
+                    required
+                    placeholder="Business Phone Number *"
+                    className="w-full bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+                    type="tel"
+                    name='businessPhoneNumber'
+                />
+            </div>
             <input
                 required
                 placeholder="Business Email *"

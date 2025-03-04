@@ -17,6 +17,7 @@ function ProductPage() {
     const { product, relatedProducts }: any = useLoaderData()
     const [screenshots, setScreenshots] = useState<string[]>([])
 
+
     const fetchImages = async () => {
         let images: string[] = [];
         let promises = [];

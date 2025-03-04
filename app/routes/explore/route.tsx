@@ -63,15 +63,20 @@ const Explore = () => {
         <Layout>
             <Suspense fallback={<div>Loading...</div>}>
                 <div className='flex flex-row'>
-                    <div className='float-left min-h-[90vh] hidden md:block p-2 bg-[#1a1c89] bg-opacity-20 rounded my-2'>
-                        <p className='text-lg'>Categories</p>
-                        <div className='flex flex-col gap-2'>
-                            {categories.slice(0, 10).map(({ title, link }, index) => <button key={index} onClick={() => handleSetSearchParams("category", link)}>
-                                <span className='bg-white block py-1 px-2 rounded bg-opacity-15'>{title}</span></button>)}
-                        </div>
-                    </div>
-                    {products && products.length > 0 ? <div className='w-full sm:w-[80%]'>
-                        <div className='w-full flex items-center justify-between'>
+
+                    <div className='w-full'>
+                        <div className='w-full flex items-center justify-between mb-3 overflow-visible px-2'>
+                            <div className='text-black flex flex-col  p-2 bg-slate-300  rounded my-2 relative 
+                            has-[button:focus]:overflow-visible overflow-hidden'>
+                                <button className='text-md flex gap-1 items-center'>
+                                    <span>Categories </span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className='h-4'><path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" /></svg>
+                                </button>
+                                <div className='absolute -bottom-2 bg-slate-900 bg-opacity-90 py-2 px-1 rounded w-fit flex flex-col gap-2 translate-y-full z-20 text-white'>
+                                    {categories.slice(0, 10).map(({ title, link }, index) => <button key={index} onClick={() => handleSetSearchParams("category", link)} className='min-w-max w-full bg-white block py-1 px-2 rounded bg-opacity-15 '>
+                                        {title}</button>)}
+                                </div>
+                            </div>
                             <div
                                 className="flex items-center border w-80 focus-within:border-indigo-500 transition duration-300 pr-3 gap-2 bg-white border-gray-500/30 h-10 rounded-[5px] overflow-hidden ml-4"
                             >
@@ -97,7 +102,7 @@ const Explore = () => {
                                     </svg>
                                 </button>
                             </div>
-                            <div className='rounded border-[2px] border-transparent has-[select:focus]:border-[var(--purple-blue)] bg-slate-400 flex gap-3 my-2
+                            <div className='rounded border-[2px] border-transparent has-[select:focus]:border-[var(--purple-blue)] bg-slate-300 flex gap-3 my-2
                             text-black mx-1 p-1 '>
                                 <p>Sort By: </p>
                                 <div>
@@ -110,23 +115,23 @@ const Explore = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5  gap-1 mx-2'>
-                            {
-                                products.map(({ _id, title, description, productURL, pricingModel, price, screenshots, productRatersCount, customerTotalRating }) => {
+                        {products.length > 0 ?
+                            <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5  gap-1 mx-2'>
+                                {products.map(({ _id, title, description, productURL, pricingModel, price, screenshots, productRatersCount, customerTotalRating }) => {
                                     return (
-                                        <div key={_id}>
+                                        <div key={_id} className='w-full'>
                                             <ProductCard _id={_id} description={description} price={price} pricingModel={pricingModel} productURL={productURL} screenshots={screenshots} title={title} productRatersCount={productRatersCount} customerTotalRating={customerTotalRating} />
                                         </div>
                                     )
-                                })
-                            }
-                        </div>
-                    </div> :
-                        <div className='h-[80vh] w-full sm:w-[80%] overflow-hidden relative '>
-                            <NothingHere />
-                            <p className='absolute left-1/2 -translate-x-1/2 top-[80%] text-3xl font-semibold text-white'>Oops...Nothing here.</p>
-                        </div>
-                    }
+                                })}
+                            </div>
+                            :
+                            <div className='h-[80vh] w-full sm:w-[80%] overflow-hidden relative '>
+                                <NothingHere />
+                                <p className='absolute left-1/2 -translate-x-1/2 top-[80%] text-3xl font-semibold text-white'>Oops...Nothing here.</p>
+                            </div>}
+                    </div>
+
                 </div>
             </Suspense>
         </Layout>

@@ -3,6 +3,8 @@ import { ActionFunction, json, LoaderFunction } from "@remix-run/node";
 import { Product, Transaction } from "../DB/models";
 import getPPAuth from "../functions/getPPAuth";
 
+const ppBaseURL = process.env.ENVIRONMENT == "development" ? "https://api-m.sandbox.paypal.com" : "https://api-m.paypal.com"
+
 export const loader:LoaderFunction = async({params}) => {
     try {
         const search = params.search || ""
@@ -30,11 +32,11 @@ export const action:ActionFunction = async ({request}) => {
         const phoneNumber = "768067032"
         const countryCode = "254"
        // const phoneNumber = seller.businessDetails.businessPhoneNumber
-       // const countryCode = seller.businessDetails.businessCountryCode || "91"
+       // const countryCode = seller.businessDetails.businessPhoneNumberCountryCode || "+91"
 
         const accessToken = await getPPAuth()
 
-        const payout = await fetch('https://api-m.sandbox.paypal.com/v1/payments/payouts', {
+        const payout = await fetch(`${ppBaseURL}/v1/payments/payouts`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -14,63 +14,69 @@ function RegisterProduct() {
 
     const { sellerID } = useParams()
     const actionData = useActionData<{ error: string }>()
+    const [error, setError] = useState("")
 
     const [productFeatures, setProductFeatures] = React.useState<String[]>([])
     const [productFeature, setProductFeature] = React.useState("")
     const [productPricingModel, setItemPricingModel] = React.useState("oneTime")
 
     const [productImages, setProductImages] = useState<string[]>([])
+    const [productFile, setProductFile] = useState<any>()
+    const [productFileTypeVal, setProductFileType] = useState("")
 
     const handleSubmit = (e: any) => {
-
-        const form = e.target
-        const featuresInput = document.createElement("input")
-        featuresInput.name = "features"
-        featuresInput.value = productFeatures.join(",")
-        featuresInput.style.display = "none"
-        form.append(featuresInput)
-
-        const sellerIDInput = document.createElement("input")
-        sellerIDInput.name = "seller"
-        sellerIDInput.value = sellerID || ""
-        sellerIDInput.style.display = "none"
-        form.append(sellerIDInput)
-
-        const screenshotsInput = document.createElement("input")
-        screenshotsInput.name = "screenshots"
-        screenshotsInput.value = productImages.join("%") || ""
-        screenshotsInput.style.display = "none"
-        form.append(screenshotsInput)
-
         setLoading(true)
+
+        const formData = new FormData()
+        formData.append("fileType", productFileTypeVal)
+        formData.append("productFile", productFile)
+        formData.append("sellerID", sellerID || "")
+        fetch("/megaUpload", {
+            method: "POST",
+            body: formData,
+            signal: AbortSignal.timeout(1800000)
+        })
+            .then(res => res.json())
+            .then(({ error, link }) => {
+                if (!error) {
+                    const form = e.target
+                    const featuresInput = document.createElement("input")
+                    featuresInput.name = "features"
+                    featuresInput.value = productFeatures.join(",")
+                    featuresInput.style.display = "none"
+                    form.append(featuresInput)
+
+                    const sellerIDInput = document.createElement("input")
+                    sellerIDInput.name = "seller"
+                    sellerIDInput.value = sellerID || ""
+                    sellerIDInput.style.display = "none"
+                    form.append(sellerIDInput)
+
+                    const screenshotsInput = document.createElement("input")
+                    screenshotsInput.name = "screenshots"
+                    screenshotsInput.value = productImages.join("%") || ""
+                    screenshotsInput.style.display = "none"
+                    form.append(screenshotsInput)
+
+                    const productFileInput = document.createElement("input")
+                    productFileInput.name = "productDownloadURL"
+                    productFileInput.value = link || ""
+                    productFileInput.style.display = "none"
+                    form.append(productFileInput)
+
+                }
+                else {
+                    e.preventDefault();
+                    setError(error)
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                setError("Oops..Something went wrong.Try again.")
+            })
+
     }
 
-    const productCategories = [
-        {
-            title: "E-Commerce",
-            value: "eCom"
-        },
-        {
-            title: "Project Management",
-            value: "projectManagement"
-        },
-        {
-            title: "Learning Management Systems",
-            value: "lms"
-        },
-        {
-            title: "Development and Deployment Tools",
-            value: "ddt"
-        },
-        {
-            title: "Customer Relationshp Management",
-            value: "crm"
-        },
-        {
-            title: "Customer support",
-            value: "customerSupport"
-        }
-    ]
 
     const handleScreenshotUpload = (target: any) => {
         imageToBase64(target.files[0]).then((img) => setProductImages([...productImages, img])).catch(err => console.log(err))
@@ -80,12 +86,22 @@ function RegisterProduct() {
         const newProductImagesArr = productImages.filter(item => item != image)
         setProductImages(newProductImagesArr)
     }
+
+    const handleProductFileUpload = (target: any) => {
+        setProductFileType(target.value.slice(target.value.length - 4))
+        //const testBuffer = new ArrayBuffer(target.files[0])
+        //console.log()
+        //console.log(testBuffer)
+
+        console.log(target.files[0])
+        setProductFile(target.files[0])
+    }
     return (
         <div className=' max-w-[500px] mx-auto bg-slate-900 p-3 my-2'>
             <p className='text-xl text-white my-2 text-center'>Please provide details of your product</p>
             <Form className="flex flex-col" onSubmit={handleSubmit} method='PUT' preventScrollReset>
                 <div className='h-30'>
-                    <ClickToUpload handleFileUpload={handleScreenshotUpload} title="Click to upload a screenshot(max 5)" disabled={productImages.length > 4} />
+                    <ClickToUpload handleFileUpload={handleScreenshotUpload} title="Click to upload a screenshot(max 5)" disabled={productImages.length > 4} acceptedFormat="image/*" id="Product-screenshots-upload" />
                 </div>
                 <div className='w-full grid grid-cols-5 my-2'>
                     {
@@ -98,7 +114,7 @@ function RegisterProduct() {
                     }
                 </div>
                 <input
-                    required
+
                     placeholder="Product's name"
                     className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 my-2 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                     type="text"
@@ -142,7 +158,7 @@ function RegisterProduct() {
                 {productPricingModel != "freemium" && <label htmlFor="product-price-input">
                     <p>Price (Dollars)</p>
                     <input
-                        required
+
                         id="product-price-input"
                         placeholder="Product's Price"
                         className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1
@@ -165,6 +181,10 @@ function RegisterProduct() {
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className='h-6 fill-green-600'><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg></button>
                     </div>
                 </div>
+                <div className='mt-4'>
+                    <ClickToUpload acceptedFormat={'.rar'} title='Click to upload your product files here(.zip or .rar)' disabled={false}
+                        handleFileUpload={handleProductFileUpload} id="Product-files-upload" name="ProductFiles" />
+                </div>
                 <button
                     className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150"
                     type="submit"
@@ -172,7 +192,7 @@ function RegisterProduct() {
                     {loading && !actionData ? <DotsLoader /> : "Upload"}
                 </button>
             </Form>
-            {actionData?.error && <p className='text-red-500'>{actionData?.error}</p>}
+            {error && <p className='text-red-500'>{error}</p>}
         </div>
     )
 }
@@ -194,20 +214,22 @@ export const action: ActionFunction = async ({ request, params }: ActionFunction
             if (key) reqBody[key] = value;
         });
 
+        console.log(reqBody)
+        console.log(reqBody.ProductFiles)
+
         const base64Files = reqBody.screenshots
         const splittedImages = typeof base64Files == "string" ? base64Files.split("%") : []
 
         let filesURLS: string[] = [];
-        for await (let file of splittedImages) {
+        /* for await (let file of splittedImages) {
             const fileName = `${userID}${Date.now()}`
 
             const uploadedFile = await (storage.upload(`${fileName}.txt`, file).complete)
             filesURLS.push(await uploadedFile.link({}))
-        }
+        } */
 
-
-        const newProduct = await new Product({ ...reqBody, features: reqBody.features.split(","), screenshots: filesURLS })
-        await newProduct.save()
+        /* const newProduct = await new Product({ ...reqBody, features: reqBody.features.split(","), screenshots: filesURLS })
+        await newProduct.save() */
         return redirect(`/account/${userID}`)
 
     } catch (error) {

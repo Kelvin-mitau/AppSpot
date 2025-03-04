@@ -23,7 +23,7 @@ function Checkout() {
     const navigate = useNavigate()
     const productID = useParams().id
     const initialOptions: ReactPayPalScriptOptions = {
-        clientId: "AajGhAoim_v_1lq9EvZcpcribRqHynGwDSouoGQF_UmhdGwSaWwaJk8iE_XFrqBhP4_ZaK8jDdzjBPkm",
+        clientId: process.env.PPZ_CLIENT_ID || "",
     };
 
     interface userDetails {
