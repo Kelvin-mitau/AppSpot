@@ -5,6 +5,7 @@ import { User } from '../DB/models'
 import { json, redirect } from '@remix-run/react'
 import { ActionFunctionArgs, ActionFunction } from '@remix-run/node'
 import { useNavigate } from '@remix-run/react'
+import argon2 from "argon2"
 
 export default function SignIn() {
     const [rememberMe, setRememberMe] = useState(false)
@@ -15,7 +16,6 @@ export default function SignIn() {
         setRememberMe(target.checked)
     }
     const serverResponse: any = useActionData()
-    console.log(serverResponse)
 
     useEffect(() => {
         if (!serverResponse) return
@@ -31,7 +31,7 @@ export default function SignIn() {
 
     }, [serverResponse])
     return (
-        <div className="flex flex-col items-center justify-center h-screen dark">
+        <div className="flex flex-col items-center justify-center h-screen ">
             <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold text-gray-200 mb-4">Login Into AppSpot </h2>
                 <Form className="flex flex-col" preventScrollReset method='POST'>
@@ -56,6 +56,10 @@ export default function SignIn() {
                         <input type="checkbox" name="rememberMe" id="" className='cursor-pointer' onChange={handeleSetRememberMe} />
                         <p>Remember me</p>
                     </div>
+                    <p className="text-white mt-4">
+                        <a className="mx-2 text-blue-500 -200 hover:underline mt-4" href="/forgot-password"
+                        >Forgot password?</a>
+                    </p>
                     <p className="text-white mt-4">
                         Have no account account?
                         <a className="mx-2 text-blue-500 -200 hover:underline mt-4" href="/sign-up"
@@ -89,7 +93,7 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
         });
 
         !user && json({ error: "Email or password is incorrect" })
-        if (!user || !(await bcrypt.compare(reqBody.password, user.password))) {
+        if (!user || !(await argon2.verify(user.password, reqBody.password))) {
             return json({ error: "Username/Email or password is incorrect" });
         }
         return json(user)

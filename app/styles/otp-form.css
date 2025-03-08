@@ -2,12 +2,11 @@
 
 
 .otp-form-card {
+    margin: auto;
     width: 280px;
-    height: 350px;
+    height: fit-content;
     border-radius: 1.2rem;
-    background-color: #fff;
-    padding: 1.3rem;
-    color: #212121;
+    padding: auto;
     text-align: center;
     position: relative;
 }
@@ -41,7 +40,7 @@
 .otp-form-card-input {
     font-size: 2rem;
     font-weight: bold;
-    letter-spacing: 2rem;
+    letter-spacing: 1rem;
     text-align: start;
     -webkit-transform: translateX(36px);
     -ms-transform: translateX(36px);
@@ -61,7 +60,7 @@
     position: absolute;
     z-index: 1;
     border-radius: 12px;
-    background-color: rgba(206, 206, 206, 0.664);
+    background-color: rgba(22, 33, 50, 0.664);
 }
 
 .call-again {

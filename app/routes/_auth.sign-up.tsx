@@ -3,7 +3,7 @@ import { Form, json, redirect, useActionData, useNavigate } from '@remix-run/rea
 import imageToBase64 from '../functions/toBase64'
 import { ActionFunction, ActionFunctionArgs } from '@remix-run/node'
 import { User } from '../DB/models'
-import bcrypt from "bcrypt"
+import argon2 from "argon2"
 
 const SignUp = () => {
     const [profilePicture, setProfilePicture] = useState<string>("");
@@ -129,7 +129,7 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
         if (reqBody.password != reqBody.confirmPassword) {
             return json({ error: "Passwords do not match" })
         }
-        reqBody.password = await bcrypt.hash(reqBody.password, 10)
+        reqBody.password = await argon2.hash(reqBody.password)
         if ((await User.find({ email: reqBody.email })).length > 0) {
             return json({ error: "This email is already registered" })
         }

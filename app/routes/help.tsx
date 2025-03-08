@@ -6,6 +6,18 @@ import { ActionFunction, json } from '@remix-run/node'
 import { useActionData } from '@remix-run/react'
 import { Issue } from '~/DB/models'
 
+import { MetaFunction } from '@remix-run/react';
+export const meta: MetaFunction = () => {
+    return [
+        {
+            title: "About",
+            description: "Need assistance? Our Help page is your comprehensive resource for navigating and maximizing your experience with AppSpot. Find answers to frequently asked questions, detailed tutorials, troubleshooting guides, and contact information for our support team. Whether you're a new user or a seasoned pro, we're here to help you resolve any issues and get the most out of our platform. We aim to provide clear, concise, and accessible support to ensure a seamless and enjoyable user experience.",
+            keywords: "help,support,assostance,contact",
+            author: "Appspot"
+        }
+    ];
+};
+
 function Help() {
     const actionData = useActionData<{ error: undefined | string, msg: undefined | string }>()
     const error = actionData?.error

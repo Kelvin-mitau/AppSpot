@@ -70,7 +70,7 @@ body{
   background: var(--purple-blue);
 
   .Nav-btn {
-    padding: 8px 4px;
+    padding: 8px 2px;
     border-radius: 7px;
     background: linear-gradient(145deg, #5556b9, #6567dc);
     box-shadow: 5px 5px 10px #4b4da5,
@@ -96,6 +96,13 @@ body{
     }
   }
 }
+@media screen and (min-width:400px) {
+  .Navbar .Nav-btn{
+    padding: 8px 4px;
+  }
+}
+
+
 .Product-card{
   border-radius: 1rem;
   border:2px #271241 solid;

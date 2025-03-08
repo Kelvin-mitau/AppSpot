@@ -1,5 +1,6 @@
 import { ActionFunction, json } from "@remix-run/node";
 import { Product, Transaction } from "../DB/models";
+import { encrypt } from "../functions/crypto";
 
 export const action:ActionFunction = async({request}) => {
     try {
@@ -13,7 +14,7 @@ export const action:ActionFunction = async({request}) => {
         await newTransaction.save() 
 
         //console.log(documentationURL)
-        return json({})
+        return json({productID:product._id,auth:encrypt("random-text","random-key")})
     } catch (error) {
         console.log("Unable to approve payment",error)
         return json({error:"Oops...Something went wrong on pur side"})

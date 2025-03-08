@@ -9,6 +9,17 @@ import { Storage } from 'megajs'
 import DotsLoader from '../components/DotsLoader';
 import categories from '../functions/productCategories';
 
+
+import { MetaFunction } from '@remix-run/react';
+export const meta: MetaFunction = () => {
+    return [
+        {
+            title: "New Product",
+            author: "Appspot"
+        }
+    ];
+};
+
 function RegisterProduct() {
     const [loading, setLoading] = useState(false)
 

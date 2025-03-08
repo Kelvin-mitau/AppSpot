@@ -9,6 +9,16 @@ import {
     ReactPayPalScriptOptions,
 } from "@paypal/react-paypal-js";
 
+import { MetaFunction } from '@remix-run/react';
+export const meta: MetaFunction = () => {
+    return [
+        {
+            title: "Checkout",
+            author: "Appspot"
+        }
+    ];
+};
+
 interface OrderData {
     id: string;
     details?: Array<{
@@ -82,7 +92,7 @@ function Checkout() {
 
         const res = await response.json();
         if (!res.error) {
-            navigate(`/download/${res.productID}`)
+            navigate(`/download/${res.productID}?a=${res.auth}`)
         }
     }
     const handleUserDetailsChange = ({ target }: any) => {

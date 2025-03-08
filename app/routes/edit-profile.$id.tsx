@@ -5,6 +5,16 @@ import imageToBase64 from '../functions/toBase64'
 import { ActionFunction, ActionFunctionArgs, LoaderFunction, LoaderFunctionArgs, json } from '@remix-run/node'
 import { User } from '../DB/models'
 
+import { MetaFunction } from '@remix-run/react';
+export const meta: MetaFunction = () => {
+    return [
+        {
+            title: "Edit Profile",
+            author: "Appspot"
+        }
+    ];
+};
+
 
 export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
     const userID = params.id

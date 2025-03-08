@@ -7,6 +7,17 @@ import { useLoaderData, useNavigate, useParams } from '@remix-run/react'
 import Layout from './Layout'
 import ProductCard from '../components/ProductCard'
 
+import { MetaFunction } from '@remix-run/react';
+export const meta: MetaFunction = () => {
+    return [
+        {
+            title: "Account",
+            description: "View your profile information, edit profile infomation and check your products",
+            author: "Appspot"
+        }
+    ];
+};
+
 interface accountData {
     _id: string,
     businessDetails: null | undefined | { businessName: string }

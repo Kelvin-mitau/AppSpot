@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Form, json, redirect, useActionData } from '@remix-run/react'
+import { Form, json, MetaFunction, redirect, useActionData } from '@remix-run/react'
 import { ActionFunction, ActionFunctionArgs } from '@remix-run/node'
 import imageToBase64 from '../../functions/toBase64'
 import AboutMe from './AboutMe'
@@ -7,6 +7,16 @@ import AboutBusiness from './AboutBusiness'
 import PaymentCollection from './PaymentCollection'
 import Layout from '../Layout'
 import { User } from '../../DB/models'
+
+
+export const meta: MetaFunction = () => {
+    return (
+        [{
+            title: "Complete Account",
+            description: "Finish setting up your profile to enjoy all features of the app."
+        }]
+    )
+}
 
 function CompleteAccount() {
     const [currentForm, setCurrentForm] = useState(1)

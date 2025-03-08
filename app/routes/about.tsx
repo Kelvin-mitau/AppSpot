@@ -1,6 +1,17 @@
 import React from 'react'
 import Contacts from '../components/Contacts'
 import Layout from './Layout'
+import { MetaFunction } from '@remix-run/react';
+export const meta: MetaFunction = () => {
+    return [
+        {
+            title: "About",
+            description: "Welcome to Appspot! Get to know more about us, our mission, vision and what we offer.",
+            keywords: "about, mission,vision",
+            author: "Appspot"
+        }
+    ];
+};
 
 function About() {
     return (

@@ -6,6 +6,17 @@ import React from 'react'
 import Navabar from '../components/Navbar'
 import Layout from './Layout'
 
+
+import { MetaFunction } from '@remix-run/react';
+export const meta: MetaFunction = () => {
+    return [
+        {
+            title: "Profile",
+            author: "Appspot"
+        }
+    ];
+};
+
 export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
     const userID = params.id
     const user = await User.findById(userID)

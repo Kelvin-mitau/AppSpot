@@ -13,6 +13,17 @@ import { Product } from '../DB/models';
 import { File } from 'megajs';
 import DotsLoader from '../components/DotsLoader';
 
+
+import { MetaFunction } from '@remix-run/react';
+export const meta: MetaFunction = () => {
+    return [
+        {
+            title: "Appspot",
+            author: "Appspot"
+        }
+    ];
+};
+
 function ProductPage() {
     const { product, relatedProducts }: any = useLoaderData()
     const [screenshots, setScreenshots] = useState<string[]>([])

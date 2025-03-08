@@ -20,8 +20,8 @@ export default function Index() {
           <div className="Hero-logo mx-auto "><img src="proskill-logo.png" alt="" className=" max-h-48 " /></div>
         </div>
         <div className="max-w-[700px] text-center">
-          <p className="px-4 py-1 my-2 rounded-full bg-slate-200 w-fit mx-auto text-black">Explore production ready SAAS products on sale.</p>
-          <h1 className="text-3xl font-bold text-center my-2">Join a dynamic community of SaaS developers and businesses, and elevate your success to new heights.</h1>
+          <p className="px-4 py-1 my-2 rounded-full bg-slate-200 w-fit mx-auto text-black">Explore production ready web and mobile products on sale.</p>
+          <h1 className="text-3xl font-bold text-center my-2">Join a dynamic community of web and mobile developers and businesses, and elevate your success to new heights.</h1>
           <p className="text-slate-300 text-lg">Simple, intuitive, and accessible to everyone.</p>
           <div className="relative inline-flex items-center justify-center gap-4 group my-4">
             <div

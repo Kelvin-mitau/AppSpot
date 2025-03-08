@@ -29,10 +29,10 @@ export const action:ActionFunction = async ({request}) => {
         const ppEmail = seller.paymentsDetails.paypalEmail
 
         //The provide values are for testing only
-        const phoneNumber = "768067032"
-        const countryCode = "254"
-       // const phoneNumber = seller.businessDetails.businessPhoneNumber
-       // const countryCode = seller.businessDetails.businessPhoneNumberCountryCode || "+91"
+       // const phoneNumber = "768067032"
+       // const countryCode = "254"
+        const phoneNumber = seller.businessDetails.businessPhoneNumber
+        const countryCode = seller.businessDetails.businessPhoneNumberCountryCode || "+91"
 
         const accessToken = await getPPAuth()
 
