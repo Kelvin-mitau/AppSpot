@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-mongoose.connect("mongodb://localhost:27017/appspot");
+mongoose.connect(`${process.env.DB_BASE_URL}`).catch(err=>console.log(err));
 
 const productSchema = new mongoose.Schema({
     title:{type:String, required:true},

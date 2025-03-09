@@ -1,6 +1,1 @@
-
-
-3.Sending emails to users : sign up verification and paypay capture(download URL)
-4.Create order file : set return and cancel URL and reference_id
-
-6.Combine account and profile
+1.Add loading animation to product image of product-card as it loads

@@ -2,7 +2,7 @@
 .File-upload-input .custum-file-upload {
     margin: auto;
     max-height: 200px;
-    max-width: 300px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: space-between;

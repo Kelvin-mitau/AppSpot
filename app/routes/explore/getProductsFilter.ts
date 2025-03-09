@@ -10,7 +10,7 @@ const getProductsFilter = (url:string) => {
             return {price:1}   
         }
         else if (paramsObj.sort == "descendingPrice") {
-            return {price:1} 
+            return {price:-1} 
         }
         else if (paramsObj.sort == "rating") {
             return {rating:-1}  

@@ -1,7 +1,7 @@
 //import crypto from "crypto"
 import crypto from "node:crypto";
 
-function encrypt(text:string, key:string) {
+function encrypt(text: string, key: string): string {
   if (!text || !key) {
     return "";
   }
@@ -20,14 +20,22 @@ function encrypt(text:string, key:string) {
   combinedBytes.set(iv, 0);
   combinedBytes.set(encryptedBytes, iv.length);
 
-  return Buffer.from(combinedBytes).toString('base64'); // Node.js base64
+  // Convert to Base64 and make it URL-safe
+  return Buffer.from(combinedBytes)
+    .toString('base64') 
+    .replaceAll(/\+/g, "-") 
+    .replaceAll(/\//g, "_") 
+
 }
 
-function decrypt(encryptedText:string, key:string) {
-  if (!encryptedText || !key) {
+function decrypt(text:string, key:string) {
+  if (!text || !key) {
     return "";
   }
   try {
+    const encryptedText =  text
+    .replaceAll(/-/g, "+") 
+    .replaceAll(/_/g, "/")
     const combinedBytes = new Uint8Array(Buffer.from(encryptedText, 'base64')); 
 
     const keyBytes = new TextEncoder().encode(key);

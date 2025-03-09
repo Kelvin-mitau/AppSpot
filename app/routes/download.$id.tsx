@@ -69,8 +69,7 @@ const Download = () => {
     return (
         <Layout>
             {!error ? <div className='flex flex-col items-center justify-center min-h-[80vh]'>
-                <span>We have sent you an email with the link to download the app {title}.</span>
-                <span>You can also utilize the button below</span>
+                <span>Please utilize the button below to download the app <span className='italic text-md'>{title}</span>.</span>
                 <button onClick={downloadMegaFile} className='bg-indigo-600 px-2 py-1 rounded cursor-pointer w-min my-4' disabled={state == "downloading"}>Download</button>
                 {
                     state == "downloading" && <div
@@ -102,11 +101,14 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         const searchParams = new URL(request.url).searchParams
         const auth = searchParams.get("a") || ""
 
-        if (decrypt(auth.replaceAll(" ", "+"), "random-key") != "random-text") {
+        if (auth && decrypt(auth.replaceAll(" ", "+"), "random-key") != "random-text") {
             return json({ error: "You are not authorized." })
         }
         const productID = params.id
-        const product = await Product.findById(productID).select(["_id", "documentationURL", "title", "productDownloadURL"])
+        const product = await Product.findById(productID).select(["_id", "documentationURL", "title", "productDownloadURL", "pricingModel"])
+        if (product.pricingModel != "freemium" && !auth) {
+            return json({ error: "You are not authorized." })
+        }
         return json({ title: product.title, documentation: product.documentationURL })
     } catch (error) {
         console.log(error)

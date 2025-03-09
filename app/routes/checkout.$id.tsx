@@ -33,7 +33,7 @@ function Checkout() {
     const navigate = useNavigate()
     const productID = useParams().id
     const initialOptions: ReactPayPalScriptOptions = {
-        clientId: process.env.PPZ_CLIENT_ID || "",
+        clientId: "AaZ_HPPmW0lfjrSkTL41-UlGauHcESpviPKBDOacEAUp4OUaI4f-OQTThGgU_b6S1mzkzH__d8Afo7sD",
     };
 
     interface userDetails {
@@ -60,23 +60,21 @@ function Checkout() {
                     cart: [{ id: productID, quantity: "1" }],
                 }),
             });
+            const res = await response.json()
+            const payerActionLink: string = res.link;
+            const orderID = res.id || "";
+            const resError: string | undefined = res.error
 
-            const orderData: OrderData = await response.json();
-
-            if (!orderData.id) {
-                const errorDetail = orderData.details ? orderData.details[0] : undefined;
-                const errorMessage = errorDetail
-                    ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
-                    : "Unexpected error occurred, please try again.";
-
-                throw new Error(errorMessage);
+            if (resError) {
+                throw new Error(resError);
             }
 
-            return orderData.id;
+            return orderID;
 
         } catch (error) {
             console.error(error);
             throw error;
+            return ""
         }
     };
 

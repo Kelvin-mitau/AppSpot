@@ -6,9 +6,11 @@ import { generateOTP, verifyOTP } from '../functions/generateOTP';
 import { User } from '../DB/models';
 import argon2 from 'argon2';
 import "../styles/otp-form.css"
-import Mailersend from "mailersend"
+
 
 import { MetaFunction } from '@remix-run/react';
+import sendEmail from '../functions/sendEmail';
+
 export const meta: MetaFunction = () => {
     return [
         {
@@ -95,7 +97,7 @@ const ForgotPassword = () => {
                         <p className="otp-form-card-title">We're calling your number to confirm it</p>
                         <p className="otp-form-card-prompt">Enter last 4 digits of the number we are calling you from</p>
                         <div className="otp-form-card-input-wrapper">
-                            <input name="otp" className="otp-form-card-input" placeholder="______" maxLength={6} type="number" />
+                            <input name="otp" className="otp-form-card-input" placeholder="______" maxLength={6} type="tel" />
                             <div className="otp-form-card-input-bg"></div>
                         </div>
                         <p className="otp-resend"><button type='button' onClick={handleOTPResend} className="underlined" >Resend</button> </p>
@@ -162,27 +164,14 @@ export const action: ActionFunction = async ({ request }) => {
             // Generate OTP
             const secret = email;
             const otp = generateOTP(secret);
-            console.log(otp);
-            const Recipient = require("mailersend").Recipient;
-            const EmailParams = require("mailersend").EmailParams;
-            const MailerSend = require("mailersend");
 
-            const mailersend = new MailerSend({
-                apiKey: "mlsn.b04c8264cda8c13ead873268efe9bc096592f3bccaf62f63a2f0992cc2888265",
-            });
-
-            const recipients = [new Recipient("recipient@email.com", "Recipient")];
-
-            const emailParams = new EmailParams()
-                .setFrom("info@domain.com")
-                .setFromName("Your Name")
-                .setRecipients(recipients)
-                .setSubject("Subject")
-                .setHtml("Greetings from the team, you got this message through MailerSend.")
-                .setText("Greetings from the team, you got this message through MailerSend.");
-
-            mailersend.send(emailParams);
-            // You would typically send the OTP via email here
+            await sendEmail({
+                type: "otp",
+                recipientEmail: email,
+                recepientName: "",
+                emailText: `AppSpot OTP: ${otp}`,
+                content: { otp }
+            })
 
             return json({ msg: "Email sent" });
         }

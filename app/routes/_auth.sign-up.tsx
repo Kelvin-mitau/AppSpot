@@ -4,6 +4,8 @@ import imageToBase64 from '../functions/toBase64'
 import { ActionFunction, ActionFunctionArgs } from '@remix-run/node'
 import { User } from '../DB/models'
 import argon2 from "argon2"
+import sendEmail from '../functions/sendEmail'
+import { generateAuth } from '../functions/verifyAccountAuth'
 
 const SignUp = () => {
     const [profilePicture, setProfilePicture] = useState<string>("");
@@ -143,9 +145,16 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
         const newUser = new User({ ...reqBody, active: false })
         await newUser.save()
         //console.log(newUser)
-        const dsalnkna = ["fksnv", "fkjsa", "rjkwb", "zfjwb", "nwvei", "jxbvs", "viosj", "ibnwe", "vbmqw", "vngvz", "vneir", "gneia", "cbquw", "cnwrn", "obewe", "gbrup", "vn9rw", "go94n", "iovbi", "ivnrv", "finea", "hoxns", "saonv", "iqnoi", "vwvin", "cvnwi", "vmlsa", "knwoe", "vnrir", "vndos", "osidv", "veris", "ainer", "vnovx", "avnve"]
 
-        console.log(`Auth link: ${dsalnkna[Math.floor(Math.random() * dsalnkna.length)]}${newUser._id}`)
+        const link = `${process.env.BASE_URL}${generateAuth(newUser._id)}`
+
+        await sendEmail({
+            type: "signUp",
+            recipientEmail: reqBody.email,
+            recepientName: reqBody.firstName + " " + reqBody.lastName,
+            emailText: `Hello ${reqBody.firstName},\n\nUse the link below to verify your email address.\n\n${link}`,
+            content: { link: `${link}` }
+        })
 
         return json(newUser)
     } catch (err) {

@@ -13,6 +13,8 @@ import { Product } from '../DB/models';
 import { File } from 'megajs';
 import DotsLoader from '../components/DotsLoader';
 
+import { encrypt } from '../functions/crypto';
+
 
 import { MetaFunction } from '@remix-run/react';
 export const meta: MetaFunction = () => {
@@ -73,15 +75,10 @@ function ProductPage() {
     const navigate = useNavigate()
 
     const handlePurchase = () => {
-        if (product.pricingModel == "freemium") {
-            navigate(product.documentationURL)
-        }
-        else {
-            navigate(product.pricingModel != "freemium" ? `/checkout/${product._id}` : product.documentationURL)
-        }
+
+        navigate(product.pricingModel != "freemium" ? `/checkout/${product._id}` : `/download/${product._id}`)
     }
 
-    const testImgs = ["/random.png", "/random.png", "/random.png", "/random.png", "/random.png",]
     const scrollRef: any = useRef(null);
 
     const scrollToRight = () => {
@@ -157,20 +154,23 @@ function ProductPage() {
                             </div>
                         </div>
                     </div>
-                    {relatedProducts && (
+                    {relatedProducts && relatedProducts.length > 0 && (
                         <div>
-                            {relatedProducts.legth > 0 && <h3>You may also like</h3>}
-                            <div className="flex gap-2 pb-2">
+                            <h3 className='text-lg my-2 text-white'>You may also like</h3>
+                            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-1 pb-2 
+                            max-w-full">
                                 {relatedProducts.map(({ _id, screenshots, title, description, productURL, pricingModel, price, customerTotalRating, productRatersCount }: any) => {
                                     return (
-                                        <div key={_id}>
+                                        <div key={_id} className=''>
                                             <ProductCard _id={_id} description={description} price={price} pricingModel={pricingModel} productURL={productURL} screenshots={screenshots} title={title} customerTotalRating={customerTotalRating} productRatersCount={productRatersCount} />
                                         </div>
                                     )
                                 })}
                             </div>
                         </div>)}
-                </div>) : <div><NothingHere /></div>}
+                </div>)
+                    :
+                    <div><NothingHere /></div>}
             </Suspense>
         </Layout>
 
@@ -182,7 +182,7 @@ export default ProductPage
 export const loader: LoaderFunction = async ({ request, params }: LoaderFunctionArgs) => {
     const productID = params.id
     const product = await Product.findById(productID)
-    const relatedProducts = await Product.find({ $and: [{ category: product.category }, { _id: { $ne: productID } }] }).limit(5)
+    const relatedProducts = await Product.find({ $and: [{ category: product.category }, { _id: { $ne: productID } }] }).limit(6).sort({ customerTotalRating: -1 })
 
     return json({ product, relatedProducts })
 }
