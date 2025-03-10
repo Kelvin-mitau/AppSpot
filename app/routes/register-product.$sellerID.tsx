@@ -12,6 +12,7 @@ import Layout from './Layout';
 
 
 import { MetaFunction } from '@remix-run/react';
+import StackOptions from '~/functions/stackOptions';
 export const meta: MetaFunction = () => {
     return [
         {
@@ -35,6 +36,11 @@ function RegisterProduct() {
     const [productImages, setProductImages] = useState<string[]>([])
     const [productFile, setProductFile] = useState<any>(null)
     const [productFileTypeVal, setProductFileType] = useState("")
+
+    const [stackInputVal, setStackInputVal] = useState("")
+    const [selectedStack, setSelectedStack] = useState<string[]>([])
+
+    const [appType, setAppType] = useState("web")
 
     const handleSubmit = (e: any) => {
         e.preventDefault()
@@ -79,6 +85,12 @@ function RegisterProduct() {
                 productFileLink.style.display = "none"
                 form.append(productFileLink)
 
+                const stackInput = document.createElement("input")
+                stackInput.name = "stackOptions"
+                stackInput.value = selectedStack.join(",") || ""
+                stackInput.style.display = "none"
+                form.append(stackInput)
+
                 form.submit()
             })
             .catch(err => console.log(err))
@@ -99,6 +111,12 @@ function RegisterProduct() {
         setProductFileType(target.value.slice(target.value.length - 4))
         setProductFile(target.files[0])
     }
+
+    const handleRemoveStack = (stack: string) => {
+        const filteredStack = selectedStack.filter(item => item != stack)
+        setSelectedStack(filteredStack)
+    }
+
     return (
         <Layout>
             <div className=' max-w-[500px] mx-auto bg-slate-900 p-3 my-2'>
@@ -124,15 +142,65 @@ function RegisterProduct() {
                         type="text"
                         name='title'
                     />
+                    <div className='my-2'>
+                        <p>Select App Type</p>
+                        <div className='my-1 flex flex-col gap-1 bg-gray-700 py-2 px-1 rounded-md'>
+                            <label htmlFor='web-type-app-input' className='gap-1 flex'>
+                                <input type="radio" name="type" onChange={({ target }) => setAppType(target.value)} id='web-type-app-input' defaultChecked value={"web"} />
+                                <span>Web App</span>
+                            </label>
+                            <label htmlFor='mobile-type-app-input' className='gap-1 flex'>
+                                <input type="radio" name="type" onChange={({ target }) => setAppType(target.value)} id='mobile-type-app-input' value={"mobile"} />
+                                <span>Mobile App</span>
+                            </label>
+                            <label htmlFor='desktop-type-app-input' className='gap-1 flex'>
+                                <input type="radio" name="type" onChange={({ target }) => setAppType(target.value)} id='desktop-type-app-input' value={"desktop"} />
+                                <span>Desktop App</span>
+                            </label>
+                        </div>
+                    </div>
                     <label htmlFor="product-type-select-input"><p>Select Product Category</p>
-                        <div className='bg-gray-700 text-gray-200 my-2 rounded py-1 w-fit'>
-                            <select name="category" id="product-type-select-input" defaultValue={"eCom"} className='bg-gray-700 text-gray-200 outline-none '>
+                        <div className='bg-gray-700 text-gray-200 mb-3 mt-1 rounded py-1 px-1 w-fit'>
+                            <select name="category" id="product-type-select-input" defaultValue={"eCom"} className='bg-gray-700 text-gray-200 outline-none  '>
                                 {
                                     categories.slice(1).map((item, _index) => <option value={item.link} key={_index}>{item.title}</option>)
                                 }
                             </select>
                         </div>
                     </label>
+                    <div className='my-2'>
+                        <p className='mb-1'>App's Stack</p>
+                        <div className=' text-gray-200 rounded-md'>
+                            <div className='flex gap-1 flex-wrap'>
+                                {
+                                    selectedStack.map((item, _index) =>
+                                        <div className='flex gap-1 items-center bg-slate-700 px-1 py-0.5 rounded my-0.5' key={_index} >
+                                            <span >{item}</span>
+                                            <button onClick={() => handleRemoveStack(item)}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
+                                                    className='h-5 fill-red-500'><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+                                            </button>
+                                        </div>
+                                    )
+                                }
+                            </div>
+
+                        </div>
+                        <div className='flex items-center  rounded-md bg-slate-500'>
+                            <input type="text" onChange={(e) => setStackInputVal(e.target.value)}
+                                className="bg-transparent text-gray-200 border-0 rounded-l-md p-2  focus:bg-gray-600 focus:outline-none focus:ring-1 w-full" value={stackInputVal} list='stack-input-list' />
+                            <datalist id='stack-input-list'>
+                                {
+                                    StackOptions(appType).map((item, _index) => <option key={_index} value={item} />)
+                                }
+                            </datalist>
+                            <button type="button"
+                                onClick={() => { stackInputVal && setSelectedStack([...selectedStack, stackInputVal]); setStackInputVal("") }}
+                                className='bg-slate-100 h-10 rounded-r-md px-2'>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className='h-6 fill-green-600'><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg></button>
+                        </div>
+                    </div>
+
                     <textarea required name="description" id="" className='resize-y w-full bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1
                    focus:ring-blue-500 transition ease-in-out duration-150' placeholder='Give a brief description of your product.'></textarea>
                     <input
@@ -230,7 +298,8 @@ export const action: ActionFunction = async ({ request, params }: ActionFunction
         const newProduct = await new Product({
             ...reqBody,
             features: reqBody?.features && reqBody.features.length > 0 ? reqBody.features.split(",") : [],
-            screenshots: filesURLS
+            screenshots: filesURLS,
+            stack: reqBody?.stackOptions && reqBody.stackOptions.length > 0 ? reqBody.stackOptions.split(",") : [],
         })
         await newProduct.save()
         return redirect(`/account/${userID}`)

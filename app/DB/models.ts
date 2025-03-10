@@ -21,7 +21,8 @@ const productSchema = new mongoose.Schema({
     purchasesCount:{type:Number, default:0},
     createdAt:{type:Date},
     verified:{type:Boolean,default:false},
-    productDownloadURL:String
+    productDownloadURL:String,
+    type:{type:String,enum:["web","mobile","desktop"],required:true},
 
 },{timestamps:{createdAt:"createdAt"}})
 

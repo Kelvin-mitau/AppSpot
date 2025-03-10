@@ -37,7 +37,7 @@ const getProductsFilter = (url:string) => {
 
     return (
         {
-            filter:{$and:[categoryObj,searchObj]},
+            filter:{$and:[categoryObj,searchObj,{verified:true}]},
             sort:sortObj
         })
     

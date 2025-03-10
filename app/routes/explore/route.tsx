@@ -14,7 +14,7 @@ import categories from '../../functions/productCategories'
 export const meta: MetaFunction = () => {
     return (
         [{
-            title: "Expolore",
+            title: "Explore",
             description: "Discover ready-built web and mobile applications designed to boost your productivity, streamline your business, and enhance your digital experience.Our Explore page showcases a curated selection of innovative apps from talented developers.Browse through trending solutions, find apps tailored to your specific needs, and unlock new possibilities for your personal and professional life.Whether you're looking for powerful business tools, creative utilities, or engaging entertainment apps, you'll find it all here.",
             keywords: "Apps,Software,Digital,Mobile,Web,Tools,Solutions,Products,Technology,Innovation,Development,Business,Productivity,Utilities,Downloads"
         }]
