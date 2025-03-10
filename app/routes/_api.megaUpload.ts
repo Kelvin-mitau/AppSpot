@@ -24,7 +24,7 @@ export const action:ActionFunction = async({request}) => {
         allowUploadBuffering:true},buffer).complete)
         return json({link:await uploadedproductFile.link({})})
     } catch (error) {
-        console.log(error)
+        console.error(error)
         return json({error:"Oops...Something went wrong.Please try again"})
     }
 }

@@ -57,7 +57,8 @@ function RegisterProduct() {
             .then(res => res.json())
             .then(({ link, error }) => {
                 if (error) {
-
+                    setLoading(false)
+                    setError(error)
                     return;
                 }
                 const form = e.target
@@ -93,7 +94,11 @@ function RegisterProduct() {
 
                 form.submit()
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.error(err)
+                setLoading(false)
+                setError("Oops...Something went wrong.")
+            })
 
     }
 

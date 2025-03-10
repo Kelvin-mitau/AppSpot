@@ -1,1 +1,4 @@
-1.Add loading animation to product image of product-card as it loads
+1. Add stack: remix, express, next js
+2.Disble clicking upload button in register product when loading. Update error handling, in case of error, setLoading to false.
+3.Fix tailwind css not found error.
+ 

@@ -1,4 +1,4 @@
-const webStack = ["React.js","Angular","Vue.js","Svelte","JavaScript (Node.js)","Python (Django)","Flask ", "FastAPI)","Ruby on Rails","Spring Boot","Laravel, Symfony","C# (.NET)","MySQL", "PostgreSQL", "SQLite", "MongoDB", "Redis",  "Firebase", "Cassandra","MariaDB"," Oracle", "SQL Server", "SQLite"]
+const webStack = ["React.js","Angular","Vue.js","Svelte","JavaScript (Node.js)","Python (Django)","Flask ", "FastAPI)","Ruby on Rails","Spring Boot","Laravel, Symfony","C# (.NET)","MySQL", "PostgreSQL", "SQLite", "MongoDB", "Redis",  "Firebase", "Cassandra","MariaDB"," Oracle", "SQL Server", "SQLite","Remix", "Express", "Next.js"]
 
 const mobileStack = ["React Native","Flutter","Swift","Kotlin","Java (Android)","Xamarin","PhoneGap, Ionic","Cordova","Unity","Cocos2d","MySQL", "PostgreSQL", "SQLite", "MongoDB", "Redis",  "Firebase", "Cassandra","MariaDB"," Oracle", "SQL Server", "SQLite"]
 

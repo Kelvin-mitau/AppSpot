@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-mongoose.connect(`${process.env.DB_BASE_URL}`).catch(err=>console.log(err));
+mongoose.connect(`${process.env.DB_BASE_URL}`).catch(err=>console.error(err));
 
 const productSchema = new mongoose.Schema({
     title:{type:String, required:true},

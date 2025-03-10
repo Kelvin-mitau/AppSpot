@@ -28,6 +28,7 @@ const Download = () => {
 
     const [downLoadProgress, setDownloadProgress] = useState(0)
 
+
     const downloadMegaFile = async () => {
         const file = File.fromURL(productDownloadURL);
         const editedTitle = title.replace(" ", "-")
@@ -70,7 +71,7 @@ const Download = () => {
         <Layout>
             {!error ? <div className='flex flex-col items-center justify-center min-h-[80vh]'>
                 <span>Please utilize the button below to download the app <span className='italic text-md'>{title}</span>.</span>
-                <button onClick={downloadMegaFile} className='bg-indigo-600 px-2 py-1 rounded cursor-pointer w-min my-4' disabled={state == "downloading"}>Download</button>
+                <button onClick={downloadMegaFile} className='bg-indigo-600 px-2 py-1 rounded cursor-pointer w-min my-4' disabled={state == "downloading" || !productDownloadURL}>Download</button>
                 {
                     state == "downloading" && <div
                         style={{ "--percentage": `${downLoadProgress.toString()}%` } as React.CSSProperties} className='Download-progress-indicator'></div>
@@ -109,7 +110,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         if (product.pricingModel != "freemium" && !auth) {
             return json({ error: "You are not authorized." })
         }
-        return json({ title: product.title, documentation: product.documentationURL })
+        return json({ title: product.title, documentation: product.documentationURL, productDownloadURL: product.productDownloadURL, error: null })
     } catch (error) {
         console.log(error)
         return json({ error: "Oops...Something went wrong on our side" })
