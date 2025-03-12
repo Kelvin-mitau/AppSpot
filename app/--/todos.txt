@@ -1,4 +1,12 @@
-1. Add stack: remix, express, next js
-2.Disble clicking upload button in register product when loading. Update error handling, in case of error, setLoading to false.
-3.Fix tailwind css not found error.
- 
+1.Give actual contacts in about page.
+//3.Fix tailwind css not found error.
+
+6.Add share/copy link button for products.
+
+11.Change height of the loader of product card.
+
+
+15.Add delete product button in admin.
+16.Add ability to delete stuff in mega js eg. Change profile picture.
+17.Store pictures as pictures and save profile pictures on mega.
+

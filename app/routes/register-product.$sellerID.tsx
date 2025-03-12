@@ -284,8 +284,8 @@ export const action: ActionFunction = async ({ request, params }: ActionFunction
         });
 
         const storage = await new Storage({
-            email: 'kelvinmitau05@gmail.com',
-            password: 'kelvin@MEGA',
+            email: process.env.MEGA_EMAIL || "",
+            password: process.env.MEGA_PASS || "",
             keepalive: true,
 
         }).ready;

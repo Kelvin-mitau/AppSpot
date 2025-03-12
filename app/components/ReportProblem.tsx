@@ -35,7 +35,6 @@ const ReportAProblem: React.FC<props> = ({ msg, error }) => {
           </svg>
         </button>
       </div>
-      <p className='text-center mb-2 text-red-400'>gbtrbtg</p>
       {error && <p className='text-center mb-2 text-red-400'>{error}</p>}
       {msg && <p className='text-center mb-2 text-blue-400'>{msg}</p>}
     </fetcher.Form>

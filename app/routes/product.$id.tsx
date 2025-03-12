@@ -69,8 +69,9 @@ function ProductPage() {
     };
 
     useEffect(() => {
+        setScreenshots([])
         fetchImages()
-    }, []);
+    }, [product]);
 
     const navigate = useNavigate()
 
@@ -94,6 +95,7 @@ function ProductPage() {
             scrollRef.current.scrollLeft -= width;
         }
     };
+
     return (
         <Layout>
             <Suspense fallback={<div>Loading...</div>}>
@@ -137,9 +139,16 @@ function ProductPage() {
                                 </ol>
                             </div>}
                             <div className='my-2'>
-                                {product.productURL && <p ><i className=''>Checkout the site: </i><a className='underline' href={product.productURL}>here.</a></p>}
-
+                                {product.productURL && <p ><i className=''>Checkout the site </i><a className='underline' href={product.productURL}>here.</a></p>}
                             </div>
+                            {product.stack?.length > 0 && <div>
+                                <p>Stack</p>
+                                <div className='mb-2 flex gap-1 flex-wrap'>
+                                    {
+                                        product.stack.map((item: string, index: number) => <span key={index} className='w-fit bg-slate-600 text-white px-2 py-0.5 rounded'>{item}</span>)
+                                    }
+                                </div>
+                            </div>}
                             <div className="flex justify-end  mt-[10%]">
                                 <button
                                     className='bg-[var(--purple-blue)] w-fit py-1 text-lg px-4 rounded-lg'
@@ -157,8 +166,8 @@ function ProductPage() {
                     {relatedProducts && relatedProducts.length > 0 && (
                         <div>
                             <h3 className='text-lg my-2 text-white'>You may also like</h3>
-                            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-1 pb-2 
-                            max-w-full">
+                            <div className="flex flex-row md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 flex-nowrap max-w-[99vw] gap-1 pb-2 overflow-x-auto
+                            ">
                                 {relatedProducts.map(({ _id, screenshots, title, description, productURL, pricingModel, price, customerTotalRating, productRatersCount }: any) => {
                                     return (
                                         <div key={_id} className=''>

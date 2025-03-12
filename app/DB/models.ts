@@ -22,6 +22,7 @@ const productSchema = new mongoose.Schema({
     createdAt:{type:Date},
     verified:{type:Boolean,default:false},
     productDownloadURL:String,
+    stack:{type:Array,required:true},
     type:{type:String,enum:["web","mobile","desktop"],required:true},
 
 },{timestamps:{createdAt:"createdAt"}})
@@ -47,6 +48,7 @@ const transactionSchema = new mongoose.Schema({
     product:{type:mongoose.Schema.ObjectId,required:true,ref:"product"},
     customerDetails:{type:Object},
     orderID:String,
+    captureID:String,
     approved:{type:Boolean,default:false},
     createdAt:Date
 },{timestamps:{createdAt:"createdAt"}})

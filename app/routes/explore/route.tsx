@@ -145,7 +145,7 @@ const Explore = () => {
                                 })}
                             </div>
                             :
-                            <div className='h-[80vh] w-full sm:w-[80%] overflow-hidden relative '>
+                            <div className='h-[80vh] w-full  overflow-hidden relative '>
                                 <NothingHere />
                                 <p className='absolute left-1/2 -translate-x-1/2 top-[80%] text-3xl font-semibold text-white'>Oops...Nothing here.</p>
                             </div>}

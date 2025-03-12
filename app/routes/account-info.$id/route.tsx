@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Form, json, MetaFunction, redirect, useActionData } from '@remix-run/react'
+import { Form, json, MetaFunction, redirect, useActionData, useParams } from '@remix-run/react'
 import { ActionFunction, ActionFunctionArgs } from '@remix-run/node'
 import imageToBase64 from '../../functions/toBase64'
 import AboutMe from './AboutMe'
@@ -19,6 +19,7 @@ export const meta: MetaFunction = () => {
 }
 
 function CompleteAccount() {
+    const userID = useParams().userID
     const [currentForm, setCurrentForm] = useState(1)
     const [paymentOption, setPaymentOption] = useState<"card" | "paypal">("card")
 
@@ -36,17 +37,49 @@ function CompleteAccount() {
         setProfilePicture(base64Val);
     }
     const handleSubmit = (event: any) => {
+        event.preventDefault()
+
         const form = event.target
-        const profilePictureInput = document.createElement("input")
-        profilePictureInput.style.display = "none"
-        profilePictureInput.name = "profilePicture"
-        profilePictureInput.value = profilePicture
-        form.append(profilePictureInput)
         const tagsInput = document.createElement("input")
         tagsInput.style.display = "none"
         tagsInput.name = "tags"
         tagsInput.value = tags.join(",")
         form.append(tagsInput)
+
+        if (profilePicture) {
+            const formData = new FormData()
+            formData.append("productFile", profilePicture)
+            formData.append("productFileType", ".txt")
+            formData.append("sellerID", userID || "")
+
+            fetch("/megaUpload", {
+                method: "POST",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(({ link, error }) => {
+                    if (error) {
+                        return;
+                    }
+                    else {
+                        const profilePictureInput = document.createElement("input")
+                        profilePictureInput.style.display = "none"
+                        profilePictureInput.name = "profilePicture"
+                        profilePictureInput.value = link
+                        form.append(profilePictureInput)
+
+                        event.target.submit()
+                    }
+                }).catch(err => console.error(err))
+        }
+
+        const profilePictureInput = document.createElement("input")
+        profilePictureInput.style.display = "none"
+        profilePictureInput.name = "profilePicture"
+        profilePictureInput.value = ''
+        form.append(profilePictureInput)
+        event.target.submit()
+
     }
     const handleCurrentTagInput = (e: any) => {
         setCurrentInputValue(e.target.value)
@@ -86,14 +119,14 @@ export const action: ActionFunction = async ({ request, params }: ActionFunction
             if (key) req[key] = value;
         });
         const userID = params.id
-        const { businessName, businessWebsiteURL, businessPhoneNumber, businessEmail, businessDescrition } = req
+        const { businessName, businessWebsiteURL, businessPhoneNumber, businessEmail, businessDescrition, businessPhoneNumberCountryCode } = req
         const { cardHolderName, cardNumber, expirationDate, CVV, billingAddress, city, country, paymentEmail, postalCode } = req
         const { paymentCollectionMethod, paypalName, paypalEmail } = req
 
-        const paymentCollectionDetails = paymentCollectionMethod == "card" ? { paymentCollectionMethod, cardHolderName, cardNumber, expirationDate, CVV, billingAddress, city, country, paymentEmail, postalCode } : { paymentCollectionMethod, paypalName, paypalEmail }
+        const paymentCollectionDetails = paymentCollectionMethod == "card" ? { paymentCollectionMethod, cardHolderName, cardNumber, expirationDate, CVV, billingAddress, city, country, paymentEmail, postalCode } : { paymentCollectionMethod: paymentCollectionMethod ? paymentCollectionMethod : "paypal", paypalName, paypalEmail }
         await User.findByIdAndUpdate(userID, {
             $set: {
-                businessDetails: { businessName, businessWebsiteURL, businessPhoneNumber, businessEmail, businessDescrition },
+                businessDetails: { businessName, businessWebsiteURL, businessPhoneNumber, businessEmail, businessDescrition, businessPhoneNumberCountryCode },
                 paymentsDetails: paymentCollectionDetails,
                 tags: req.tags,
                 bio: req.bio,

@@ -59,9 +59,9 @@ function Profile() {
 
             {userData ? (<div className='mx-auto flex flex-col items-center justify-center text-white'>
                 <div className='relative bg-[#0000003f] pb-5 px-3 my-36 min-w-64 sm:min-w-72 rounded-lg max-w-[28rem]'>
-                    <img src={userData.profilePicture ? userData.profilePicture : "/random.png"} alt="Profile picture" className='absolute  -translate-y-1/2 rounded-full w-40 aspect-square
-                     border-lg border-white left-1/2 -translate-x-1/2' />
-                    <p className='text-center mt-20 mx-auto rounded bg-[var(--cyan)] text-black px-2 py-1 w-fit mb-2'>
+                    {/* <img src={userData.profilePicture ? userData.profilePicture : "/random.png"} alt="Profile picture" className='absolute  -translate-y-1/2 rounded-full w-40 aspect-square
+                     border-lg border-white left-1/2 -translate-x-1/2' /> */}
+                    <p className='text-center mt-5 mx-auto rounded bg-[var(--cyan)] text-black px-2 py-1 w-fit mb-2'>
                         <Link to={`/edit-profile/${userData._id}`} >Update Profile</Link>
                     </p>
                     <p className='text-center'>@{userData.username}</p>

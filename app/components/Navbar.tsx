@@ -12,7 +12,7 @@ function Navbar() {
 
     return (
         <div className="Navbar w-full">
-            <div className="flex items-center justify-between w-full px-4 py-1">
+            <div className="flex items-center justify-between w-full px-2 py-1">
 
                 <button onClick={() => { navigate("/explore") }}>
                     <div className="Hero-logo"><img src="/logo.png" alt="" className=" max-h-12 " /></div>
@@ -24,7 +24,7 @@ function Navbar() {
                     <button className="Nav-btn text-white font-semibold hover:text-gray-200" onClick={() => { navigate("/about") }}><span>About</span></button>
                     {!userID ?
                         <button className="Nav-btn text-white font-semibold hover:text-gray-200" onClick={() => { navigate("/sign-in") }}><span>Login</span></button>
-                        : <button className="Nav-btn text-white font-semibold hover:text-gray-200" onClick={() => { navigate(`/profile/${userID}`) }}><span>Profile</span></button>
+                        : <button className="Nav-btn text-white font-semibold hover:text-gray-200" onClick={() => { navigate(`/account/${userID}`) }}><span>Profile</span></button>
                     }
                 </div>
             </div>
