@@ -40,7 +40,7 @@ const ProductCard: React.FC<ProductDetails> = ({ _id, screenshots, title, produc
     }, []);
     return (
 
-        <div onClick={() => navigate(`/product/${_id}`)} key={_id} className="text-start cursor-pointer w-full h-full">
+        <div onClick={() => navigate(`/product/${_id}`)} key={_id} className="text-start cursor-pointer w-full h-full select-none" >
             <div className='Product-card h-full mx-2 flex flex-col  p-1 text-white' >
                 {screenShotSrc ?
                     <img src={screenShotSrc} alt="" className='w-full aspect-[2/1.5] mr-1 rounded-lg' />

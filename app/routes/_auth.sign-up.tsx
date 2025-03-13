@@ -116,7 +116,7 @@ const SignUp = () => {
                         type="submit" disabled={loading}
                         onClick={() => setLoading(true)}
                     >
-                        {loading && !serverResponse ? <DotsLoader /> : "Upload"}
+                        {loading && !serverResponse ? <DotsLoader /> : "Submit"}
                     </button>
                     {serverResponseError && <p className='text-red-600 mt-2 mx-auto'>{serverResponseError}</p>}
                 </Form>

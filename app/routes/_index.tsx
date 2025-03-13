@@ -50,9 +50,9 @@ export default function Index() {
               </svg>
             </a>
           </div>
-          {/* <div className="block">
+          <div className="block">
             <Link to={"/guide"} className="bg-indigo-500 rounded-lg px-4 py-1 font-semibold tracking-wide text-lg flex items-center mx-auto gap-1 w-fit">
-              <span>How it works </span>
+              <span>Guides and Support</span>
               <svg
                 aria-hidden="true"
                 viewBox="0 0 10 10"
@@ -66,7 +66,7 @@ export default function Index() {
                   className="transition hover:translate-x-[3px]"
                 ></path>
               </svg></Link>
-          </div> */}
+          </div>
         </div>
       </div>
     </Layout>

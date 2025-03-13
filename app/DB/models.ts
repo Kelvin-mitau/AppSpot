@@ -24,6 +24,7 @@ const productSchema = new mongoose.Schema({
     productDownloadURL:String,
     stack:{type:Array,required:true},
     type:{type:String,enum:["web","mobile","desktop"],required:true},
+    sponsered:{type:Boolean,default:false}
 
 },{timestamps:{createdAt:"createdAt"}})
 

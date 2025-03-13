@@ -102,7 +102,7 @@ function CompleteAccount() {
                     </div>
                     <div className={currentForm != 3 ? "hidden" : ""}>
                         <h2 className='text-white text-center text-2xl my-2'>Paypal Payment Collection Information</h2>
-                        <PaymentCollection paymentOption={paymentOption} setCurrentForm={setCurrentForm} setPaymentOption={setPaymentOption}
+                        <PaymentCollection profilePicture={profilePicture} paymentOption={paymentOption} setCurrentForm={setCurrentForm} setPaymentOption={setPaymentOption}
                             errorMSG={actionData?.error} />
                     </div>
                 </div>

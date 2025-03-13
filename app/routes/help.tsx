@@ -32,6 +32,35 @@ function Help() {
                         AppSpot Help <span className="text-[var(--purple-blue)]">Center</span>
                     </h1>
                 </div>
+                <div className='w-full flex items-center'>
+                    <div className="relative mx-auto inline-flex items-center justify-center gap-4 group mt-6">
+                        <div
+                            className="absolute inset-0 duration-1000 opacity-60 transitiona-all bg-gradient-to-r from-[var(--purple-blue)] via-[var(--light-blue)] to-[var(--aqua)] rounded-xl blur-[4px] filter group-hover:opacity-100 group-hover:duration-200"
+                        ></div>
+                        <a
+                            role="button"
+                            className="border border-white group relative inline-flex items-center justify-center text-base rounded-xl bg-gray-900 px-8 py-3 font-semibold text-white transition-all duration-200 hover:bg-gray-800 hover:shadow-lg hover:-translate-y-0.5 hover:shadow-gray-600/30"
+                            href="/guide"
+                        >How to use AppSpot<svg
+                            aria-hidden="true"
+                            viewBox="0 0 10 10"
+                            height="10"
+                            width="10"
+                            fill="none"
+                            className="mt-0.5 ml-2 -mr-1 stroke-white stroke-2"
+                        >
+                                <path
+                                    d="M0 5h7"
+                                    className="transition opacity-0 group-hover:opacity-100"
+                                ></path>
+                                <path
+                                    d="M1 1l4 4-4 4"
+                                    className="transition group-hover:translate-x-[3px]"
+                                ></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
                 <div className="my-3">
                     <div
                         className="mt-10 mb-10  w-[97%] sm:w-[90%] mx-auto"

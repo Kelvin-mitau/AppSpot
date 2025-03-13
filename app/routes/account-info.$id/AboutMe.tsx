@@ -12,6 +12,8 @@ interface props {
 }
 
 const AboutMe: React.FC<props> = ({ profilePicture, handleImageUpload, tags, setTags, handleAppendTag, handleCurrentTagInput, popularTagsArr, setCurrentForm }) => {
+
+
     return (
         <>
             <h2 className='text-white text-center text-2xl my-2'>Tell Us More About You</h2>
@@ -59,8 +61,9 @@ const AboutMe: React.FC<props> = ({ profilePicture, handleImageUpload, tags, set
             <div className='flex justify-end w-full'>
                 <button
                     onClick={() => setCurrentForm(2)}
-                    className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150"
+                    className={`bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150 ${!profilePicture ? "opacity-50" : ""}`}
                     type="button"
+                    disabled={!profilePicture}
                 >
                     Next
                 </button>
